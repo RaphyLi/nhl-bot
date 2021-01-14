@@ -1,0 +1,15 @@
+FROM node:12
+
+ARG SLACK_BOT_TOKEN=$SLACK_BOT_TOKEN
+ARG SLACK_SIGNING_SECRET=$SLACK_SIGNING_SECRET
+ARG SLACK_CHANNEL_ID=$SLACK_CHANNEL_ID
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+CMD [ "npm", "start" ]
