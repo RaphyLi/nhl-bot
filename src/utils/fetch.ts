@@ -1,14 +1,12 @@
 import axios from 'axios';
 
-const BASE_URL = 'https://statsapi.web.nhl.com/api/v1';
-
-function fetch(url: string) {
+function fetch<T>(url: string): Promise<T> {
     return new Promise(function (resolve, reject) {
         const isValidUrl = url.startsWith('https');
         axios.get(url).then(function (res) {
-            resolve(res)
+            resolve(res.data as T);
         }).catch(function (err) {
-            reject(err)
+            reject(err);
         });
     });
 }
