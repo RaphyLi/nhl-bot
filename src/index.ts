@@ -31,7 +31,7 @@ app.message(/^(schedule|scores|live|help).*/, async ({ context, say }) => {
     // RegExp matches are inside of context.matches
     const greeting = context.matches[0];
 
-    actions[greeting]();
+    say(actions[greeting]());
 });
 
 app.error(async (error) => {
