@@ -5,9 +5,9 @@ import { Help } from './help';
 import { Schedule } from './nhl/schedule';
 import { getYesterday } from './utils/helpers';
 
-const token: string = process.env.SLACK_BOT_TOKEN;
-const signingSecret: string = process.env.SLACK_SIGNING_SECRET;
-const channelId: string = process.env.SLACK_CHANNEL_ID;
+const token: string = 'xoxb-1620933655654-1620989265094-hLDs3AKByumU4wMOoDv6dYNB';
+const signingSecret: string = '2866a49500888a45ea60611436f4fa21';
+const channelId: string = 'C01JF67JV1B';
 
 const app = new App({
     token: token,
@@ -25,13 +25,14 @@ const actions = {
 }
 const everyDayAt9am = '0 9 * * *';
 const everyMinute = '* * * * *';
+let first = true;
 
 // Listens to incoming messages that contain "hello"
 app.message(/^(schedule|scores|live|help).*/, async ({ context, say }) => {
     // RegExp matches are inside of context.matches
     const greeting = context.matches[0];
 
-    say(actions[greeting]());
+    say(await actions[greeting]());
 });
 
 app.error(async (error) => {
@@ -40,6 +41,10 @@ app.error(async (error) => {
 });
 
 cron.schedule(everyMinute, () => {
+    if (first) {
+        first = false;
+        return;
+    }
     Promise.all([
         schedule.get(),
         schedule.get(getYesterday())
@@ -54,7 +59,7 @@ cron.schedule(everyMinute, () => {
 
 (async () => {
     // Start your app
-    await app.start(process.env.PORT || 3000);
+    await app.start(3000);
 
     console.log('⚡️ Bolt app is running!');
 })();

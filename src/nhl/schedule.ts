@@ -1,5 +1,4 @@
 import { BotMessageEvent } from '@slack/bolt/dist/types/events';
-import { resolve } from 'path';
 import qs from 'qs';
 import fetch from '../utils/fetch';
 import { getToday } from '../utils/helpers';
@@ -18,11 +17,11 @@ export class Schedule {
             fetch<NHL>(BASE_URL + `/schedule${options ? "?" + qs.stringify(options) : ""}`).then((result) => {
                 console.log(result);
                 console.log(result.dates);
-                const pretext = date ? `The results of yesterday's NHL games` : `NHL Games of the day's` ;
+                const pretext = date ? `The results of yesterday's NHL games` : `NHL Games of the day's`;
                 const title = `${date ? date : getToday()}`;
                 const games = [];
                 result.dates.forEach(value => {
-                    value.games.forEach(game => games.push(`${game.teams.home.team.name} VS ${game.teams.away.team.name}}`));
+                    value.games.forEach(game => games.push(`${game.teams.home.team.name} VS ${game.teams.away.team.name}`));
                 });
                 resolve({
                     attachments: [
