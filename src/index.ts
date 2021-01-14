@@ -1,6 +1,7 @@
 import { App } from '@slack/bolt';
 import { WebClient } from '@slack/web-api';
 import * as cron from 'node-cron';
+import { Help } from './help';
 import { Schedule } from './nhl/schedule';
 import { getYesterday } from './utils/helpers';
 
@@ -14,17 +15,19 @@ const app = new App({
 });
 const webClient = new WebClient(token);
 const schedule = new Schedule();
+const help = new Help();
 
 const actions = {
     'schedule': schedule.get,
     'scores': () => schedule.get(getYesterday()),
-    'live': schedule.broadcasts
+    'live': schedule.broadcasts,
+    'help': help.help
 }
 const everyDayAt9am = '0 9 * * *';
 const everyMinute = '* * * * *';
 
 // Listens to incoming messages that contain "hello"
-app.message(/^(schedule|scores|live).*/, async ({ context, say }) => {
+app.message(/^(schedule|scores|live|help).*/, async ({ context, say }) => {
     // RegExp matches are inside of context.matches
     const greeting = context.matches[0];
 

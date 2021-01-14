@@ -1,4 +1,5 @@
-import { Teams } from './teams';
+import { Team, Teams } from './teams';
+
 export interface Games {
     gamePk: number,
     link: string,
@@ -6,6 +7,9 @@ export interface Games {
     season: string,
     gameDate: Date,
     status: Status;
+    teams: Teams;
+    venue: Venue;
+    content: Content;
 }
 
 export interface Status {
@@ -14,9 +18,6 @@ export interface Status {
     detailedState: string;
     statusCode: string;
     startTimeTBD: boolean;
-    teams: Teams;
-    venue: Venue;
-    content: Content;
 }
 
 export interface Venue {
