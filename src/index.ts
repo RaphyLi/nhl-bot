@@ -4,7 +4,7 @@ import * as cron from 'node-cron';
 import { Schedule } from './nhl/schedule';
 import { getYesterday } from './utils/helpers';
 
-const token: string = process.env.SLACK_TOKEN;
+const token: string = process.env.SLACK_BOT_TOKEN;
 const signingSecret: string = process.env.SLACK_SIGNING_SECRET;
 const channelId: string = process.env.SLACK_CHANNEL_ID;
 
