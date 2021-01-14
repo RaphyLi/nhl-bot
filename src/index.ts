@@ -50,7 +50,13 @@ cron.schedule(everyDayAt9am, () => {
     ]).then(([matchOfTheDay, scoreYesterday]) => {
         webClient.chat.postMessage({
             channel: channelId,
-            text: 'Summer has come and passed'
+            attachments: matchOfTheDay.attachments,
+            text: ''
+        });
+        webClient.chat.postMessage({
+            channel: channelId,
+            attachments: scoreYesterday.attachments,
+            text: ''
         });
     });
 });
