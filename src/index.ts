@@ -5,9 +5,9 @@ import { Help } from './help';
 import { Schedule } from './nhl/schedule';
 import { getYesterday } from './utils/helpers';
 
-const token: string = 'xoxb-1620933655654-1620989265094-hLDs3AKByumU4wMOoDv6dYNB';
-const signingSecret: string = '2866a49500888a45ea60611436f4fa21';
-const channelId: string = 'C01JF67JV1B';
+const token: string = process.env.SLACK_BOT_TOKEN;
+const signingSecret: string = process.env.SLACK_SIGNING_SECRET;
+const channelId: string = process.env.SLACK_CHANNEL_ID;
 
 const app = new App({
     token: token,
@@ -24,7 +24,6 @@ const actions = {
     'help': help.help
 }
 const everyDayAt9am = '0 9 * * *';
-const everyMinute = '* * * * *';
 let first = true;
 
 // Listens to incoming messages that contain "hello"
@@ -40,7 +39,7 @@ app.error(async (error) => {
     console.error(error);
 });
 
-cron.schedule(everyMinute, () => {
+cron.schedule(everyDayAt9am, () => {
     if (first) {
         first = false;
         return;
@@ -59,7 +58,7 @@ cron.schedule(everyMinute, () => {
 
 (async () => {
     // Start your app
-    await app.start(3000);
+    await app.start(process.env.PORT || 3000);
 
     console.log('⚡️ Bolt app is running!');
 })();
