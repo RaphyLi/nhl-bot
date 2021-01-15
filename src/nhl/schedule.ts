@@ -75,7 +75,7 @@ export class Schedule {
                 alt_text: team.team.name
             },
             {
-                type: "mrkdwn",
+                type: "plain_text",
                 text: `${team.team.name}${withScore ? `(${team.goals})` : ''} ${delimeter ? delimeter : ''}`
             },
         ]
