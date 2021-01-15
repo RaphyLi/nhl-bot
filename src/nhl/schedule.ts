@@ -19,10 +19,8 @@ export class Schedule {
         }
         return new Promise((resolve, reject) => {
             fetch<NHL>(BASE_URL + `/schedule${options ? "?" + qs.stringify(options) : ""}`).then((result) => {
-                console.log(result);
-                console.log(result.dates);
-                const pretext = date ? `The results of yesterday's NHL games` : `NHL Games of the day's`;
-                const title = `${date ? date : getToday()}`;
+                const title = date ? `The results of yesterday's NHL games` : `NHL Games of the day's`;
+                const dateTitle = `${date ? date : getToday()}`;
                 const blocks : Array<ContextBlock> = new Array<ContextBlock>();
                 
                 result.dates.forEach(value => {
@@ -32,14 +30,22 @@ export class Schedule {
                             elements: []
                         };
                         if (date) {
-                            block.elements.push(...this.formatTeam(game.linescore.teams.home, '-', true));
-                            block.elements.push(...this.formatTeam(game.linescore.teams.away, null, true));
+                            block.elements.push(...this.formatTeam(game.linescore.teams.home, true));
+                            block.elements.push({
+                                type: 'mrkdwn',
+                                text: '-'
+                            });
+                            block.elements.push(...this.formatTeam(game.linescore.teams.away, true));
                             block.elements.push({
                                 type: 'mrkdwn',
                                 text: `FINAL${game.linescore.currentPeriod > 3 ? '/OT' : ''}`
                             });
                         } else {
-                            block.elements.push(...this.formatTeam(game.teams.home, 'VS'));
+                            block.elements.push(...this.formatTeam(game.teams.home));
+                            block.elements.push({
+                                type: 'mrkdwn',
+                                text: 'VS'
+                            });
                             block.elements.push(...this.formatTeam(game.teams.away));
                         }
 
@@ -52,7 +58,7 @@ export class Schedule {
                             type: "section",
                             text: {
                                 type: "mrkdwn",
-                                text: `*<https://www.nhl.com/schedule/${date ? date : getToday()}/ET|${title}>*`
+                                text: `${title} *<https://www.nhl.com/schedule/${date ? date : getToday()}/ET|${dateTitle}>*`
                             }
                         },
                     ],
@@ -67,7 +73,7 @@ export class Schedule {
         });
     }
 
-    private formatTeam(team: Home | Away, delimeter?: string, withScore: boolean = false): Array<ImageElement | PlainTextElement | MrkdwnElement> {
+    private formatTeam(team: Home | Away, withScore: boolean = false): Array<ImageElement | PlainTextElement | MrkdwnElement> {
         return [
             {
                 type: 'image',
@@ -76,7 +82,7 @@ export class Schedule {
             },
             {
                 type: "plain_text",
-                text: `${team.team.name}${withScore ? `(${team.goals})` : ''} ${delimeter ? delimeter : ''}`
+                text: `${team.team.name}${withScore ? `(${team.goals})` : ''}`
             },
         ]
     }
