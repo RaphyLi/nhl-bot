@@ -1,7 +1,10 @@
+import { ImageElement, PlainTextElement, MrkdwnElement } from '@slack/bolt';
 import { BotMessageEvent } from '@slack/bolt/dist/types/events';
+import { ContextBlock } from '@slack/web-api';
 import qs from 'qs';
 import fetch from '../utils/fetch';
 import { getToday } from '../utils/helpers';
+import { mappingTeamIdToLogo } from './logo';
 import { NHL } from './models/nhl';
 import { Away, Home } from './models/teams';
 
@@ -12,52 +15,70 @@ export class Schedule {
         console.log(`get ${date ? date : ''}`);
         let options;
         if (date) {
-            options = { ...options, date: date };
+            options = { ...options, date: date, expand: 'schedule.linescore' };
         }
-        return new Promise(function (resolve, reject) {
+        return new Promise((resolve, reject) => {
             fetch<NHL>(BASE_URL + `/schedule${options ? "?" + qs.stringify(options) : ""}`).then((result) => {
                 console.log(result);
                 console.log(result.dates);
                 const pretext = date ? `The results of yesterday's NHL games` : `NHL Games of the day's`;
                 const title = `${date ? date : getToday()}`;
-                const games = [];
+                const blocks : Array<ContextBlock> = new Array<ContextBlock>();
+                
                 result.dates.forEach(value => {
                     value.games.forEach(game => {
-                        const home = game.teams.home;
-                        const away = game.teams.away;
-                        let message: string = '';
+                        let block: ContextBlock = {
+                            type: 'context',
+                            elements: []
+                        };
                         if (date) {
-                            let winTeam: Home | Away;
-                            let losseTeam: Home | Away;
-
-                            if (home.leagueRecord.wins === 1) {
-                                winTeam = home;
-                                losseTeam = away;
-                            } else {
-                                losseTeam = home;
-                                winTeam = away;
-                            }
-
-                            message = `${winTeam.team.name} (${winTeam.score}) - ${losseTeam.team.name} (${losseTeam.score}) FINAL${losseTeam.leagueRecord.ot ? '/OT' : ''}`;
+                            block.elements.push(...this.formatTeam(game.linescore.teams.home, '-', true));
+                            block.elements.push(...this.formatTeam(game.linescore.teams.away, null, true));
+                            block.elements.push({
+                                type: 'mrkdwn',
+                                text: `FINAL${game.linescore.currentPeriod > 3 ? '/OT' : ''}`
+                            });
                         } else {
-                            message = `${game.teams.home.team.name} VS ${game.teams.away.team.name}`;
+                            block.elements.push(...this.formatTeam(game.teams.home, 'VS'));
+                            block.elements.push(...this.formatTeam(game.teams.away));
                         }
 
-                        games.push(message);
+                        blocks.push(block);
                     });
                 });
                 resolve({
+                    blocks: [
+                        {
+                            type: "section",
+                            text: {
+                                type: "mrkdwn",
+                                text: `*<https://www.nhl.com/schedule/${date ? date : getToday()}/ET|${title}>*`
+                            }
+                        },
+                    ],
                     attachments: [
                         {
-                            pretext: `${pretext}`,
                             color: '#36a64f',
-                            title: `${title}`,
-                            text: games.join('\n')
+                            blocks: blocks
                         }
                     ]
                 } as BotMessageEvent);
             });
         });
+    }
+
+    private formatTeam(team: Home | Away, delimeter?: string, withScore: boolean = false): Array<ImageElement | PlainTextElement | MrkdwnElement> {
+        return [
+            {
+                type: 'image',
+                image_url: mappingTeamIdToLogo[team.team.id],
+                alt_text: team.team.name
+            },
+            {
+                type: "mrkdwn",
+                text: `${team.team.name}${withScore ? `(${team.goals})` : ''} ${delimeter ? delimeter : ''}`
+            },
+        ]
     }
 
     broadcasts() {

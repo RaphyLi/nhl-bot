@@ -2,12 +2,18 @@ import { App } from '@slack/bolt';
 import { WebClient } from '@slack/web-api';
 import * as cron from 'node-cron';
 import { Help } from './help';
+import { mappingTeamIdToLogo } from './nhl/logo';
 import { Schedule } from './nhl/schedule';
 import { getYesterday } from './utils/helpers';
 
-const token: string = process.env.SLACK_BOT_TOKEN;
-const signingSecret: string = process.env.SLACK_SIGNING_SECRET;
-const channelId: string = process.env.SLACK_CHANNEL_ID;
+let token: string = process.env.SLACK_BOT_TOKEN;
+let signingSecret: string = process.env.SLACK_SIGNING_SECRET;
+let channelId: string = process.env.SLACK_CHANNEL_ID;
+
+token = 'xoxb-1620933655654-1620989265094-ELHLOTVDzO2YUB9xWCkNr8cn';
+signingSecret = '2866a49500888a45ea60611436f4fa21';
+channelId = 'C01JF67JV1B';
+
 
 const app = new App({
     token: token,
@@ -39,6 +45,22 @@ app.error(async (error) => {
     console.error(error);
 });
 
+schedule.get().then((res) => {
+    webClient.chat.postMessage({
+        channel: channelId,
+        text: '',
+        ...res
+    });
+});
+
+schedule.get('2021-01-13').then((res) => {
+    webClient.chat.postMessage({
+        channel: channelId,
+        text: '',
+        ...res
+    });
+});
+
 cron.schedule(everyDayAt9am, () => {
     if (first) {
         first = false;
@@ -64,7 +86,7 @@ cron.schedule(everyDayAt9am, () => {
 
 (async () => {
     // Start your app
-    await app.start(process.env.PORT || 3000);
+    await app.start(+process.env.PORT || 3000);
 
     console.log('⚡️ Bolt app is running!');
 })();
