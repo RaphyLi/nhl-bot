@@ -1,4 +1,4 @@
-import { Games } from './game';
+import { Game } from './game';
 
 export interface NHLDate {
     date: Date;
@@ -6,7 +6,7 @@ export interface NHLDate {
     totalEvents: number;
     totalGames: number;
     totalMatches: number;
-    games: Array<Games>;
+    games: Array<Game>;
     events: Array<any>;
     matches: Array<any>;
 }

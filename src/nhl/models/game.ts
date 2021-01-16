@@ -1,6 +1,6 @@
-import { Away, Home, Team, Teams } from './teams';
+import { Away, Home, Teams } from './teams';
 
-export interface Games {
+export interface Game {
     gamePk: number,
     link: string,
     gameType: string,

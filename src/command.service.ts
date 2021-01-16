@@ -7,7 +7,8 @@ export class CommandService {
     private commandAction = {
         'standings': async (command: SlashCommand) => await this.standingService.get(command),
         'schedule': async (command: SlashCommand) => await this.scheduleService.get(),
-        'scores': async (command: SlashCommand) => await this.scheduleService.get(getYesterday())
+        'scores': async (command: SlashCommand) => await this.scheduleService.get(getYesterday()),
+        'live': async (commad: SlashCommand) => await this.scheduleService.live()
     }
     constructor(private scheduleService: ScheduleService, private standingService: StandingService) {
     }

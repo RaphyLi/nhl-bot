@@ -5,6 +5,7 @@ import qs from 'qs';
 import fetch from '../utils/fetch';
 import { getToday } from '../utils/helpers';
 import { mappingTeamIdToLogo } from './logo';
+import { Game } from './models/game';
 import { NHL } from './models/nhl';
 import { Away, Home } from './models/teams';
 
@@ -87,10 +88,13 @@ export class ScheduleService {
         ]
     }
 
-    broadcasts() {
-        console.log(`broadcasts`);
-        fetch<NHL>(this.BASE_URL + '/schedule?expand=schedule.broadcasts').then((result) => {
-            console.log(result);
+    live() {
+        let options = { expand: 'schedule.linescore' };
+        fetch<NHL>(this.BASE_URL + `/schedule${options ? "?" + qs.stringify(options) : ""}`).then((result) => {
+            const lives: Array<Game> = [];
+            result.dates.forEach(date => {
+                lives.push(...date.games.filter(x => x.status.abstractGameState === 'Live'));
+            });
             return result;
         });
     }
