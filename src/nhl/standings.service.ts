@@ -1,11 +1,12 @@
-import { Division, Standings } from './models/standings';
-import fetch from '../utils/fetch';
+import { SlashCommand } from '@slack/bolt';
 import { ContextBlock, KnownBlock } from '@slack/web-api';
+import fetch from '../utils/fetch';
+import { Division, Standings } from './models/standings';
 
-export class Standing {
+export class StandingService {
     private BASE_URL = 'https://statsapi.web.nhl.com/api/v1';
 
-    get(): Promise<any> {
+    get(command: SlashCommand): Promise<any> {
         return new Promise((resolve, reject) => {
             fetch<Standings>(this.BASE_URL + `/standings`).then((result) => {
                 const title = `NHL :star:`;

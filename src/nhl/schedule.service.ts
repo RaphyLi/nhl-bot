@@ -1,4 +1,4 @@
-import { ImageElement, PlainTextElement, MrkdwnElement } from '@slack/bolt';
+import { ImageElement, MrkdwnElement, PlainTextElement } from '@slack/bolt';
 import { BotMessageEvent } from '@slack/bolt/dist/types/events';
 import { ContextBlock } from '@slack/web-api';
 import qs from 'qs';
@@ -8,9 +8,9 @@ import { mappingTeamIdToLogo } from './logo';
 import { NHL } from './models/nhl';
 import { Away, Home } from './models/teams';
 
-const BASE_URL = 'https://statsapi.web.nhl.com/api/v1';
+export class ScheduleService {
+    private BASE_URL = 'https://statsapi.web.nhl.com/api/v1';
 
-export class Schedule {
     get(date?: string): Promise<BotMessageEvent> {
         console.log(`get ${date ? date : ''}`);
         let options;
@@ -18,11 +18,11 @@ export class Schedule {
             options = { ...options, date: date, expand: 'schedule.linescore' };
         }
         return new Promise((resolve, reject) => {
-            fetch<NHL>(BASE_URL + `/schedule${options ? "?" + qs.stringify(options) : ""}`).then((result) => {
+            fetch<NHL>(this.BASE_URL + `/schedule${options ? "?" + qs.stringify(options) : ""}`).then((result) => {
                 const title = date ? `The results of yesterday's NHL games` : `NHL Games of the day's`;
                 const dateTitle = `${date ? date : getToday()}`;
-                const blocks : Array<ContextBlock> = new Array<ContextBlock>();
-                
+                const blocks: Array<ContextBlock> = new Array<ContextBlock>();
+
                 result.dates.forEach(value => {
                     value.games.forEach(game => {
                         let block: ContextBlock = {
@@ -89,7 +89,7 @@ export class Schedule {
 
     broadcasts() {
         console.log(`broadcasts`);
-        fetch<NHL>(BASE_URL + '/schedule?expand=schedule.broadcasts').then((result) => {
+        fetch<NHL>(this.BASE_URL + '/schedule?expand=schedule.broadcasts').then((result) => {
             console.log(result);
             return result;
         });
