@@ -1,28 +1,58 @@
-import { App } from '@slack/bolt';
-import { WebClient } from '@slack/web-api';
+import { App, LogLevel } from '@slack/bolt';
 import * as cron from 'node-cron';
 import { CommandService } from './command.service';
-import { HelpService } from './nhl/helpService';
+import { DatabaseService } from './database.service';
+import { HelpService } from './helpService';
 import { ScheduleService } from './nhl/schedule.service';
 import { StandingService } from './nhl/standings.service';
 import { NotificationService } from './notification.service';
 import { getYesterday } from './utils/helpers';
 
-let token: string = process.env.SLACK_BOT_TOKEN;
-let signingSecret: string = process.env.SLACK_SIGNING_SECRET;
-let channelId: string = process.env.SLACK_CHANNEL_ID;
-
-const app = new App({
-    token: token,
-    signingSecret: signingSecret,
-});
-
-const webClient = new WebClient(token);
+const databaseService = new DatabaseService();
 const scheduleService = new ScheduleService();
 const standingService = new StandingService();
 const helpService = new HelpService();
-const notificationService = new NotificationService();
+const notificationService = new NotificationService(databaseService);
 const commandService = new CommandService(scheduleService, standingService, notificationService, helpService);
+
+databaseService.connection();
+notificationService.init();
+
+const app = new App({ 
+    signingSecret: process.env.SLACK_SIGNING_SECRET,
+    clientId: process.env.SLACK_CLIENT_ID,
+    clientSecret: process.env.SLACK_CLIENT_SECRET,
+    stateSecret: process.env.SLACK_STATE_SECRET,
+    scopes: ['channels:history', 'chat:write', 'commands', 'groups:read', 'users:read'],
+    logLevel: LogLevel.DEBUG,
+    installationStore: {
+        storeInstallation: async (installation) => {
+            // change the line below so it saves to your database
+            if (installation.isEnterpriseInstall) {
+                // support for org wide app installation
+                return await databaseService.query(`INSERT INTO SLACK.Tokens (teamid, installation) VALUES (${installation.enterprise.id}, ${JSON.stringify(installation)})`);
+                // return await database.set(installation.enterprise.id, installation);
+            } else {
+                // single team app installation
+                return await databaseService.query(`INSERT INTO SLACK.Tokens (teamid, installation) VALUES (${installation.team.id}, ${JSON.stringify(installation)})`);
+                // return await database.set(installation.team.id, installation);
+            }
+            throw new Error('Failed saving installation data to installationStore');
+        },
+        fetchInstallation: async (installQuery) => {
+            // change the line below so it fetches from your database
+            if (installQuery.isEnterpriseInstall && installQuery.enterpriseId !== undefined) {
+                // org wide app installation lookup
+                return await databaseService.query(`SELECT installation FROM SLACK.Tokens WHERE teamid = ${installQuery.enterpriseId}`);
+            }
+            if (installQuery.teamId !== undefined) {
+                // single team app installation lookup
+                return await databaseService.query(`SELECT installation FROM SLACK.Tokens WHERE teamid = ${installQuery.teamId}`);
+            }
+            throw new Error('Failed fetching installation');
+        },
+    },
+});
 
 const actions = {
     'schedule': scheduleService.get,
@@ -61,13 +91,13 @@ app.command('/off', async ({ command, ack, say }) => {
     await say(await commandService.handleCommand(command));
 });
 
-// Listens to incoming messages that contain "hello"
-app.message(/^(schedule|scores|live|standings|help|on|off).*/, async ({ event, context, say }) => {
-    // RegExp matches are inside of context.matches
-    const greeting = context.matches[0];
+// // Listens to incoming messages that contain "hello"
+// app.message(/^(schedule|scores|live|standings|help|on|off).*/, async ({ event, context, say }) => {
+//     // RegExp matches are inside of context.matches
+//     const greeting = context.matches[0];
 
-    say(await actions[greeting](event));
-});
+//     say(await actions[greeting](event));
+// });
 
 app.error(async (error) => {
     // Check the details of the error to handle cases where you should retry sending a message or stop the app
@@ -85,12 +115,12 @@ cron.schedule(everyDayAt9am, () => {
     ]).then(([matchOfTheDay, scoreYesterday]) => {
         const channelIds = notificationService.getChannelIds();
         channelIds.forEach(channelId => {
-            webClient.chat.postMessage({
+            app.client.chat.postMessage({
                 channel: channelId,
                 attachments: matchOfTheDay.attachments,
                 text: ''
             });
-            webClient.chat.postMessage({
+            app.client.chat.postMessage({
                 channel: channelId,
                 attachments: scoreYesterday.attachments,
                 text: ''

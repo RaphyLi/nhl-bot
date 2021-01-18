@@ -6,20 +6,33 @@ import { Division, Standings, TeamRecord } from './models/standings';
 
 export class StandingService {
     private BASE_URL = 'https://statsapi.web.nhl.com/api/v1';
+    private divisions: Array<Division>;
+    private matchDivision = {
+        'west': 'WST',
+        'central': 'CEN',
+        'east': 'EST',
+        'north': 'NTH'
+    }
+
+    constructor() {
+    }
 
     get(command?: SlashCommand): Promise<any> {
         return new Promise((resolve, reject) => {
             let options;
             options = {
-                expand: ['standings.team', 'standings.record']
+                expand: ['standings.division', 'standings.team', 'standings.record']
             };
-            const url = this.BASE_URL + `/standings${options ? "?" + qs.stringify(options, { indices: false }) : ""}`;
-            console.log(url);
-            fetch<Standings>(url).then((result) => {
+            fetch<Standings>(this.BASE_URL + `/standings${options ? "?" + qs.stringify(options, { indices: false }) : ""}`).then((result) => {
                 const title = `NHL :star:`;
                 const blocks: Array<KnownBlock> = new Array<KnownBlock>();
+                const byDivision = this.parseDivision(command);
+                let records = result.records;
+                if (byDivision) {
+                    records = records.filter(x => x.division.abbreviation === byDivision);
+                }
 
-                result.records.forEach(record => {
+                records.forEach(record => {
                     blocks.push({
                         type: 'section',
                         text: {
@@ -50,6 +63,17 @@ export class StandingService {
         });
     }
 
+    private parseDivision(command: SlashCommand): string {
+        if (command && command.text) {
+            const found = command.text.match(/(\bwest\b|\beast\b|\bnorth\b|\bcentral\b)/);
+            if (found) {
+                return this.matchDivision[found[0]];
+            } else {
+                return 'Division not matching.'
+            }
+        }
+        return;
+    }
     private formatLine(teams: Array<TeamRecord>): string {
         const top = '                  GP  W  L  OT  PTS  GF  GA  DIFF   HOME    AWAY  S/O     L10  STRK\n';
         let message = top;

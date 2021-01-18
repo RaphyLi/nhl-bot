@@ -22,6 +22,9 @@ export interface Division {
     id: number;
     link: string;
     name: string;
+    abbreviation: string;
+    conference: Conference;
+    active: boolean;
 }
 
 export interface League {
@@ -65,10 +68,10 @@ export interface StandingRecord {
     overallRecords: Array<OverallRecord>;
 }
 export interface OverallRecord {
-    wins : number;
-    losses : number;
-    ot : number;
-    type : string;
+    wins: number;
+    losses: number;
+    ot: number;
+    type: string;
 }
 
 export interface Streak {

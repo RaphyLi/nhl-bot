@@ -1,5 +1,5 @@
 import { SlashCommand } from '@slack/bolt';
-import { HelpService } from './nhl/helpService';
+import { HelpService } from './helpService';
 import { ScheduleService } from './nhl/schedule.service';
 import { StandingService } from './nhl/standings.service';
 import { NotificationService } from './notification.service';

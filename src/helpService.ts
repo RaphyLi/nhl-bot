@@ -20,7 +20,7 @@ export class HelpService {
                     "text":
                     {
                         "type": "mrkdwn",
-                        "text": "`schedule` - games of the day's"
+                        "text": "`/schedule` - games of the day's"
                     }
                 },
                 {
@@ -28,7 +28,7 @@ export class HelpService {
                     "text":
                     {
                         "type": "mrkdwn",
-                        "text": "`scores` - results of yesterday's games"
+                        "text": "`/scores` - results of yesterday's games"
                     }
                 },
                 {
@@ -36,7 +36,7 @@ export class HelpService {
                     "text":
                     {
                         "type": "mrkdwn",
-                        "text": "`live` - current games"
+                        "text": "`/standing (west/east/north/central)` - Return the current NHL standings for all or a specific conference/division "
                     }
                 },
                 {
@@ -44,7 +44,7 @@ export class HelpService {
                     "text":
                     {
                         "type": "mrkdwn",
-                        "text": "`help` - check the commands"
+                        "text": "`/help` - check the commands"
                     }
                 },
             ]
