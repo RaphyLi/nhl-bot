@@ -23,7 +23,7 @@ const app = new App({
     clientId: process.env.SLACK_CLIENT_ID,
     clientSecret: process.env.SLACK_CLIENT_SECRET,
     stateSecret: process.env.SLACK_STATE_SECRET,
-    scopes: ['channels:history', 'chat:write', 'commands', 'groups:read', 'users:read'],
+    scopes: ['channels:history', 'chat:write', 'commands', 'groups:read', 'groups:history', 'users:read'],
     logLevel: LogLevel.DEBUG,
     installationStore: {
         storeInstallation: async (installation) => {
