@@ -1,6 +1,6 @@
 import { MessageAttachment } from "@slack/bolt";
 
-export class Help {
+export class HelpService {
     constructor() {
 
     }
