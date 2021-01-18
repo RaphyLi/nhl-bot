@@ -4,7 +4,6 @@ export interface Standings {
     copyright: string;
     records: Array<Record>;
 }
-
 export interface Record {
     conference: Conference;
     division: Division;
@@ -59,10 +58,27 @@ export interface TeamRecord {
     streak: Streak;
     team: Team;
     wildCardRank: string;
+    records: StandingRecord;
+}
+
+export interface StandingRecord {
+    overallRecords: Array<OverallRecord>;
+}
+export interface OverallRecord {
+    wins : number;
+    losses : number;
+    ot : number;
+    type : string;
 }
 
 export interface Streak {
     streakCode: string;
     streakNumber: number;
     streakType: string;
+}
+
+export interface Franchise {
+    franchiseId: number;
+    teamName: string;
+    link: string;
 }
