@@ -1,8 +1,8 @@
 import { SlashCommand } from '@slack/bolt';
 import { HelpService } from './nhl/helpService';
-import { NotificationService } from './nhl/notificationService';
 import { ScheduleService } from './nhl/schedule.service';
 import { StandingService } from './nhl/standings.service';
+import { NotificationService } from './notification.service';
 import { getYesterday } from './utils/helpers';
 
 export class CommandService {

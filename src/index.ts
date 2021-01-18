@@ -3,9 +3,9 @@ import { WebClient } from '@slack/web-api';
 import * as cron from 'node-cron';
 import { CommandService } from './command.service';
 import { HelpService } from './nhl/helpService';
-import { NotificationService } from './nhl/notificationService';
 import { ScheduleService } from './nhl/schedule.service';
 import { StandingService } from './nhl/standings.service';
+import { NotificationService } from './notification.service';
 import { getYesterday } from './utils/helpers';
 
 let token: string = process.env.SLACK_BOT_TOKEN;
