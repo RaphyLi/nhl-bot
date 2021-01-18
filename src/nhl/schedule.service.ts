@@ -69,7 +69,7 @@ export class ScheduleService {
                             blocks: blocks
                         }
                     ]
-                } as BotMessageEvent);
+                });
             });
         });
     }

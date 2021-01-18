@@ -31,7 +31,7 @@ const actions = {
     'standings': standingService.get,
     'help': helpService.help,
     'on': (event) => notificationService.on(event),
-    'off': (event) => notificationService.on(event)
+    'off': (event) => notificationService.off(event)
 }
 const everyDayAt9am = '0 9 * * *';
 let first = true;
@@ -60,6 +60,7 @@ app.command('/off', async ({ command, ack, say }) => {
     await ack();
     await say(await commandService.handleCommand(command));
 });
+
 // Listens to incoming messages that contain "hello"
 app.message(/^(schedule|scores|live|standings|help|on|off).*/, async ({ event, context, say }) => {
     // RegExp matches are inside of context.matches

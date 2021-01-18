@@ -1,3 +1,4 @@
+import { BotMessageEvent } from '@slack/bolt';
 
 export class NotificationService {
     private channelIds: Array<string>;
@@ -6,18 +7,21 @@ export class NotificationService {
         this.channelIds = [];
     }
 
-    on(channelId: string): boolean {
+    on(channelId: string): BotMessageEvent {
         this.channelIds.push(channelId);
-        return true;
+        return {
+            text: 'notification is turned on this channel'
+        } as BotMessageEvent;
     }
 
-    off(channelId: string): boolean {
+    off(channelId: string): BotMessageEvent {
         const channelIdIdx = this.channelIds.findIndex(x => x === channelId);
         if (channelIdIdx !== -1) {
             this.channelIds.splice(channelIdIdx, 1);
-            return true;
         }
-        return false;
+        return {
+            text: 'notification is turned off'
+        } as BotMessageEvent;
     }
 
     getChannelIds() {
