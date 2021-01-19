@@ -19,8 +19,7 @@ jobs:
       - name: Prepare Metadata
         id: prep
         run: |
-          REGISTRY="ghcr.io"
-          IMAGE="${REGISTRY}/${{ github.repository }}/${{ github.event.repository.name }}"
+          IMAGE="${REGISTRY}/raphyli/nhl-bot"
           TAGS="${IMAGE}:${{ github.sha }}"
           if [[ $GITHUB_REF == ref/head/master ]]; then
             TAGS="${TAGS},${IMAGE}:latest"
