@@ -19,16 +19,15 @@ jobs:
       - name: Get current date
         run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> ${GITHUB_ENV}
 
-      - name: Prepare Metadata
-        id: prep
-        run: |
-          REGISTRY="ghcr.io"
-          IMAGE="${REGISTRY}/raphyli/nhl-bot"
-          TAGS="${IMAGE}:${{ github.sha }}"
-          if [[ $GITHUB_REF == ref/head/master ]]; then
-            TAGS="${TAGS},${IMAGE}:latest"
-          fi
-          echo ::set-output name=tags::${TAGS}
+      - name: Docker meta
+        id: docker_meta
+        uses: crazy-max/ghaction-docker-meta@v1
+        with:
+          images: raphyli/nhl-bot
+          tag-sha: true
+          tag-semver: |
+            {{version}}
+            {{major}}.{{minor}}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -52,10 +51,7 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          push: true
-          build-args: |
-            BUILD_DATE=${{ env.BUILD_DATE }}
-            BUILD_REVISION=${{ github.sha }}
-            BUILD_VERSION=${{ github.sha }}
-          # tags: ${{ steps.prep.outputs.tags }}
-          tags: ghcr.io/raphyli/nhl-bot:latest
+          platforms: linux/amd64,linux/arm64,linux/386
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.docker_meta.outputs.tags }}
+          labels: ${{ steps.docker_meta.outputs.labels }}
