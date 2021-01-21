@@ -43,7 +43,6 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ghcr.io/raphyli/nhl-bot:develop
-          platforms: linux/amd64,linux/arm64,linux/386
           # push: ${{ github.event_name != 'pull_request' }}
           # tags: ${{ steps.docker_meta.outputs.tags }}
           # labels: ${{ steps.docker_meta.outputs.labels }}
