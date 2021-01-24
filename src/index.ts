@@ -18,7 +18,7 @@ const commandService = new CommandService(scheduleService, standingService, noti
 databaseService.connection();
 notificationService.init();
 
-const app = new App({ 
+const app = new App({
     signingSecret: process.env.SLACK_SIGNING_SECRET,
     clientId: process.env.SLACK_CLIENT_ID,
     clientSecret: process.env.SLACK_CLIENT_SECRET,
@@ -30,11 +30,11 @@ const app = new App({
             // change the line below so it saves to your database
             if (installation.isEnterpriseInstall) {
                 // support for org wide app installation
-                return await databaseService.query(`INSERT INTO SLACK.Tokens (teamid, installation) VALUES (${installation.enterprise.id}, ${JSON.stringify(installation)})`);
+                return await databaseService.query(`INSERT INTO \`SLACK.Tokens\` (teamid, installation) VALUES (${installation.enterprise.id}, ${JSON.stringify(installation)})`);
                 // return await database.set(installation.enterprise.id, installation);
             } else {
                 // single team app installation
-                return await databaseService.query(`INSERT INTO SLACK.Tokens (teamid, installation) VALUES (${installation.team.id}, ${JSON.stringify(installation)})`);
+                return await databaseService.query(`INSERT INTO \`SLACK.Tokens\` (teamid, installation) VALUES (${installation.team.id}, ${JSON.stringify(installation)})`);
                 // return await database.set(installation.team.id, installation);
             }
             throw new Error('Failed saving installation data to installationStore');
@@ -43,11 +43,11 @@ const app = new App({
             // change the line below so it fetches from your database
             if (installQuery.isEnterpriseInstall && installQuery.enterpriseId !== undefined) {
                 // org wide app installation lookup
-                return await databaseService.query(`SELECT installation FROM SLACK.Tokens WHERE teamid = ${installQuery.enterpriseId}`);
+                return await databaseService.query(`SELECT installation FROM \`SLACK.Tokens\` WHERE teamid = ${installQuery.enterpriseId}`);
             }
             if (installQuery.teamId !== undefined) {
                 // single team app installation lookup
-                return await databaseService.query(`SELECT installation FROM SLACK.Tokens WHERE teamid = ${installQuery.teamId}`);
+                return await databaseService.query(`SELECT installation FROM \`SLACK.Tokens\` WHERE teamid = ${installQuery.teamId}`);
             }
             throw new Error('Failed fetching installation');
         },
