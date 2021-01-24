@@ -10,7 +10,7 @@ services:
     container_name: mariadb
     restart: always
     environment:
-      - MYSQL_ROOT_PASSWORD=m0nm@r1adbr00t
+      - MYSQL_ROOT_PASSWORD=r00t
       - MYSQL_USER=nhl
       - MYSQL_PASSWORD=nhl2021
 
