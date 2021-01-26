@@ -106,7 +106,7 @@ app.error(async (error) => {
     console.error(error);
 });
 
-cron.schedule(everyDayAt9am, () => {
+cron.schedule(everyminute, () => {
     if (first) {
         first = false;
         return;
