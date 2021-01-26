@@ -1,5 +1,5 @@
 import { SlashCommand } from '@slack/bolt';
-import { ContextBlock, KnownBlock } from '@slack/web-api';
+import { KnownBlock } from '@slack/web-api';
 import qs from 'qs';
 import fetch from '../utils/fetch';
 import { Division, Standings, TeamRecord } from './models/standings';
@@ -75,7 +75,7 @@ export class StandingService {
         return;
     }
     private formatLine(teams: Array<TeamRecord>): string {
-        const top = '                  GP  W  L  OT  PTS  GF  GA  DIFF   HOME    AWAY  S/O     L10  STRK\n';
+        const top = '                  GP  W  L  OT  PTS  DIFF   HOME    AWAY  S/O     L10  STRK\n';
         let message = top;
         const leftPad = ('                ');
         teams.forEach(team => {
@@ -87,7 +87,7 @@ export class StandingService {
             const name = `${team.divisionRank}. ` + team.team.teamName + leftPad.substring(team.team.teamName.length, leftPad.length);
             message += `${name}` +
                 `${this.formatNumber(team.gamesPlayed)} ${this.formatNumber(team.leagueRecord.wins)} ${this.formatNumber(team.leagueRecord.losses)}  ${this.formatNumber(team.leagueRecord.ot)}` +
-                `  ${this.formatNumber(team.points, true)} ${this.formatNumber(team.goalsScored, true)} ${this.formatNumber(team.goalsAgainst, true)}   ${this.formatNumber(team.goalsScored - team.goalsAgainst)} ` +
+                `  ${this.formatNumber(team.points, true)}   ${this.formatNumber(team.goalsScored - team.goalsAgainst)} ` +
                 `  ${overallRecordHome.wins}-${overallRecordHome.losses}-${overallRecordHome.ot}   ${overallRecordAway.wins}-${overallRecordAway.losses}-${overallRecordAway.ot} ` +
                 ` ${overallShootOuts.wins}-${overallShootOuts.losses}   ${overallLastTen.wins}-${overallLastTen.losses}-${overallLastTen.ot} ` +
                 `  ${team.streak?.streakCode}\n`;
