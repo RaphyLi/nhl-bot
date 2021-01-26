@@ -116,8 +116,8 @@ cron.schedule(everyminute, () => {
         scheduleService.get(getYesterday())
     ]).then(([matchOfTheDay, scoreYesterday]) => {
         const channelIds = notificationService.getChannelIds();
-        console.log(channelIds);
         channelIds.forEach(async channelId => {
+            console.log(channelId);
             await app.client.chat.postMessage({
                 channel: channelId,
                 attachments: matchOfTheDay.attachments,
