@@ -28,7 +28,6 @@ const app = new App({
     logLevel: LogLevel.DEBUG,
     installationStore: {
         storeInstallation: async (installation) => {
-            console.log('storeInstallation')
             // change the line below so it saves to your database
             if (installation.isEnterpriseInstall) {
                 // support for org wide app installation
@@ -40,7 +39,6 @@ const app = new App({
             throw new Error('Failed saving installation data to installationStore');
         },
         fetchInstallation: async (installQuery) => {
-            console.log('fetchInstallation')
             // change the line below so it fetches from your database
             if (installQuery.isEnterpriseInstall && installQuery.enterpriseId !== undefined) {
                 // org wide app installation lookup

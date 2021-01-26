@@ -24,7 +24,6 @@ export class DatabaseService {
 
     public query(query: string): Promise<any> {
         return new Promise((resolve, reject) => {
-            console.log(query);
             this.con.query(query, (error, results, fields) => {
                 resolve(results);
             });

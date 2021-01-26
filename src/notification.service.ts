@@ -9,7 +9,7 @@ export class NotificationService {
 
     public async init() {
         const result = await this.databaseService.query('SELECT channelId FROM ChannelsNotification');
-        this.channelIds = result;
+        this.channelIds = result || [];
     }
 
     public on(channelId: string): BotMessageEvent {
