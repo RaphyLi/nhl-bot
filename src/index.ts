@@ -24,7 +24,7 @@ const app = new App({
     clientId: process.env.SLACK_CLIENT_ID,
     clientSecret: process.env.SLACK_CLIENT_SECRET,
     stateSecret: process.env.SLACK_STATE_SECRET,
-    scopes: ['channels:history', 'chat:write', 'commands', 'groups:history', 'users:read', 'im:history', 'im:write', 'mpim:history'],
+    scopes: ['channels:history', 'chat:write', 'commands', 'groups:history', 'users:read', 'im:history', 'im:write', 'mpim:history', 'chat:write.public', 'incoming-webhook'],
     logLevel: LogLevel.DEBUG,
     installationStore: {
         storeInstallation: async (installation) => {
