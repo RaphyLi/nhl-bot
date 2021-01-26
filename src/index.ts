@@ -65,6 +65,7 @@ const actions = {
     'off': (event) => notificationService.off(event)
 }
 const everyDayAt9am = '0 9 * * *';
+const everyminute = '* * * * *';
 let first = true;
 
 app.command('/standings', async ({ command, ack, say }) => {

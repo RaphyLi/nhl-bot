@@ -13,7 +13,6 @@ export class NotificationService {
     }
 
     public async on(channelId: string): Promise<BotMessageEvent> {
-        console.log(channelId);
         const channelIdIdx = this.channelIds.findIndex(x => x === channelId);
         if (channelIdIdx === -1) {
             this.channelIds.push(channelId);
