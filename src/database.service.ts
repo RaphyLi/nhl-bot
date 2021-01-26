@@ -25,8 +25,8 @@ export class DatabaseService {
 
     public query(query: string): Promise<any> {
         return new Promise((resolve, reject) => {
-            this.con.query(query, (queryCallback) => {
-                resolve(queryCallback);
+            this.con.query(query, (error, results, fields) => {
+                resolve(results);
             });
         });
     }

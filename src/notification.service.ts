@@ -8,7 +8,7 @@ export class NotificationService {
     }
 
     public async init() {
-        const result = await this.databaseService.query('SELECT channelId FROM \`SLACK.ChannelsNotification\`');
+        const result = await this.databaseService.query('SELECT channelId FROM ChannelsNotification');
         this.channelIds = result;
     }
 
@@ -16,7 +16,7 @@ export class NotificationService {
         const channelIdIdx = this.channelIds.findIndex(x => x === channelId);
         if (channelIdIdx === -1) {
             this.channelIds.push(channelId);
-            this.databaseService.query(`INSERT INTO \`SLACK.ChannelsNotification\` (channelId) VALUES ${channelId}`);
+            this.databaseService.query(`INSERT INTO ChannelsNotification (channelId) VALUES ('${channelId}')`);
             return {
                 text: 'notification is turned on this channel'
             } as BotMessageEvent;
@@ -27,7 +27,7 @@ export class NotificationService {
         const channelIdIdx = this.channelIds.findIndex(x => x === channelId);
         if (channelIdIdx !== -1) {
             this.channelIds.splice(channelIdIdx, 1);
-            this.databaseService.query(`DELETE \`SLACK.ChannelsNotification\` WHERE channelId = ${channelId}`);
+            this.databaseService.query(`DELETE ChannelsNotification WHERE channelId = '${channelId}'`);
         }
         return {
             text: 'notification is turned off'

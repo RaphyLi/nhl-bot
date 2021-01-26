@@ -7,6 +7,7 @@ import { ScheduleService } from './nhl/schedule.service';
 import { StandingService } from './nhl/standings.service';
 import { NotificationService } from './notification.service';
 import { getYesterday } from './utils/helpers';
+import mysql = require('mysql');
 
 const databaseService = new DatabaseService();
 const scheduleService = new ScheduleService();
@@ -23,31 +24,33 @@ const app = new App({
     clientId: process.env.SLACK_CLIENT_ID,
     clientSecret: process.env.SLACK_CLIENT_SECRET,
     stateSecret: process.env.SLACK_STATE_SECRET,
-    scopes: ['channels:history', 'chat:write', 'commands', 'groups:read', 'groups:history', 'users:read'],
+    scopes: ['channels:history', 'chat:write', 'commands', 'groups:history', 'users:read', 'im:history', 'im:write', 'mpim:history'],
     logLevel: LogLevel.DEBUG,
     installationStore: {
         storeInstallation: async (installation) => {
+            console.log('storeInstallation')
             // change the line below so it saves to your database
             if (installation.isEnterpriseInstall) {
                 // support for org wide app installation
-                return await databaseService.query(`INSERT INTO \`SLACK.Tokens\` (teamid, installation) VALUES (${installation.enterprise.id}, ${JSON.stringify(installation)})`);
-                // return await database.set(installation.enterprise.id, installation);
+                return await databaseService.query(`INSERT INTO Workspaces (teamid, installation) VALUES ('${installation.enterprise.id}', '${JSON.stringify(installation)}')`);
             } else {
                 // single team app installation
-                return await databaseService.query(`INSERT INTO \`SLACK.Tokens\` (teamid, installation) VALUES (${installation.team.id}, ${JSON.stringify(installation)})`);
-                // return await database.set(installation.team.id, installation);
+                return await databaseService.query(`INSERT INTO Workspaces (teamid, installation) VALUES ('${installation.team.id}', '${JSON.stringify(installation)}')`);
             }
             throw new Error('Failed saving installation data to installationStore');
         },
         fetchInstallation: async (installQuery) => {
+            console.log('fetchInstallation')
             // change the line below so it fetches from your database
             if (installQuery.isEnterpriseInstall && installQuery.enterpriseId !== undefined) {
                 // org wide app installation lookup
-                return await databaseService.query(`SELECT installation FROM \`SLACK.Tokens\` WHERE teamid = ${installQuery.enterpriseId}`);
+                const query = await databaseService.query(`SELECT installation FROM Workspaces WHERE teamid = '${installQuery.enterpriseId}'`);
+                return JSON.parse(query[0].installation);
             }
             if (installQuery.teamId !== undefined) {
                 // single team app installation lookup
-                return await databaseService.query(`SELECT installation FROM \`SLACK.Tokens\` WHERE teamid = ${installQuery.teamId}`);
+                const query = await databaseService.query(`SELECT installation FROM Workspaces WHERE teamid = '${installQuery.teamId}'`);
+                return JSON.parse(query[0].installation);
             }
             throw new Error('Failed fetching installation');
         },
@@ -66,7 +69,7 @@ const actions = {
 const everyDayAt9am = '0 9 * * *';
 let first = true;
 
-app.command('/standing', async ({ command, ack, say }) => {
+app.command('/standings', async ({ command, ack, say }) => {
     await ack();
     await say(await commandService.handleCommand(command));
 });
