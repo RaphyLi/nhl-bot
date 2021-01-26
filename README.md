@@ -1,5 +1,8 @@
 # NHL-bot
 
+[![Latest release](https://img.shields.io/github/v/release/RaphyLi/nhl-bot)](https://github.com/RaphyLi/nhl-bot/releases)
+[![GitHub Package Repository](https://img.shields.io/static/v1.svg?style=flat&label=docker&message=github%20Package&color=blue&logoColor=ffffff)](https://github.com/users/RaphyLi/packages/container/package/nhl-bot)
+
 The slack NHL bot
 
 ## Install
