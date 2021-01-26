@@ -12,22 +12,23 @@ export class NotificationService {
         this.channelIds = result || [];
     }
 
-    public on(channelId: string): BotMessageEvent {
+    public async on(channelId: string): Promise<BotMessageEvent> {
+        console.log(channelId);
         const channelIdIdx = this.channelIds.findIndex(x => x === channelId);
         if (channelIdIdx === -1) {
             this.channelIds.push(channelId);
-            this.databaseService.query(`INSERT INTO ChannelsNotification (channelId) VALUES ('${channelId}')`);
+            await this.databaseService.query(`INSERT INTO ChannelsNotification (channelId) VALUES ('${channelId}')`);
             return {
                 text: 'notification is turned on this channel'
             } as BotMessageEvent;
         }
     }
 
-    public off(channelId: string): BotMessageEvent {
+    public async off(channelId: string): Promise<BotMessageEvent> {
         const channelIdIdx = this.channelIds.findIndex(x => x === channelId);
         if (channelIdIdx !== -1) {
             this.channelIds.splice(channelIdIdx, 1);
-            this.databaseService.query(`DELETE ChannelsNotification WHERE channelId = '${channelId}'`);
+            await this.databaseService.query(`DELETE ChannelsNotification WHERE channelId = '${channelId}'`);
         }
         return {
             text: 'notification is turned off'

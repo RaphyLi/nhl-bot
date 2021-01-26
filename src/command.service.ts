@@ -10,10 +10,10 @@ export class CommandService {
         'standings': async (command: SlashCommand) => await this.standingService.get(command),
         'schedule': async (command: SlashCommand) => await this.scheduleService.get(),
         'scores': async (command: SlashCommand) => await this.scheduleService.get(getYesterday()),
-        'live': async (commad: SlashCommand) => await this.scheduleService.live(),
-        'on': async (commad: SlashCommand) => await this.notificationService.on(commad.channel_id),
-        'off': async (commad: SlashCommand) => await this.notificationService.off(commad.channel_id),
-        'help': async (commad: SlashCommand) => await this.helpService.help(),
+        'live': async (command: SlashCommand) => await this.scheduleService.live(),
+        'on': async (command: SlashCommand) => await this.notificationService.on(command.channel_id),
+        'off': async (command: SlashCommand) => await this.notificationService.off(command.channel_id),
+        'help': async (command: SlashCommand) => await this.helpService.help(),
     }
     constructor(
         private scheduleService: ScheduleService,
