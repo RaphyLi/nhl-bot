@@ -1,4 +1,4 @@
-name: release-docker
+name: test
 
 on:
   push:
