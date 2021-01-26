@@ -11,7 +11,7 @@ export class NotificationService {
         const result = await this.databaseService.query('SELECT channelId FROM ChannelsNotification');
         this.channelIds = [];
         if (result && result.length > 0) {
-            this.channelIds = result.map(channelId => channelId);
+            this.channelIds = result.map(item => item.channelId);
         }
         console.log(this.channelIds);
     }
