@@ -13,7 +13,6 @@ export class NotificationService {
         if (result && result.length > 0) {
             this.channelIds = result.map(item => item.channelId);
         }
-        console.log(this.channelIds);
     }
 
     public async on(channelId: string): Promise<BotMessageEvent> {
