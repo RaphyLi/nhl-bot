@@ -5,17 +5,34 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "node",
-            "request": "launch",
             "name": "Launch Program",
+            "program": "${workspaceFolder}/src/index.ts",
+            "preLaunchTask": "tsc: build - tsconfig.json",
+            "request": "launch",
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/dist/index.js",
-            "preLaunchTask": "tsc: build - tsconfig.json",
-            "outFiles": [
-                "${workspaceFolder}/dist/**/*.js"
+            "env": {
+                "SLACK_SIGNING_SECRET": "ea2a23e8768e22b747ad558696ca88ae",
+                "SLACK_CLIENT_ID": "1620933655654.1633894684132",
+                "SLACK_CLIENT_SECRET": "dee4b4e2d58d527285d1feb3f18c3811",
+                "SLACK_STATE_SECRET": "my-secret-nhl",
+                "DB_HOST": "localhost",
+                "DB_PORT": "3306",
+                "DB_USER": "nhl",
+                "DB_PASSWORD": "nhl2021",
+                "DB_DATABASE": "nhl",
+            },
+            "type": "pwa-node"
+        },
+        {
+            "name": "Attach by Process ID",
+            "processId": "${command:PickProcess}",
+            "request": "attach",
+            "skipFiles": [
+                "<node_internals>/**"
             ],
-        }
+            "type": "pwa-node"
+        },
     ]
 }

@@ -1,41 +1,57 @@
-import { BotMessageEvent } from '@slack/bolt';
+import { BotMessageEvent, SlashCommand } from '@slack/bolt';
+import { ChannelsNotification } from './channels-notification.model';
 import { DatabaseService } from './database.service';
 
 export class NotificationService {
-    private channelIds: Array<string>;
+    private channels: Array<ChannelsNotification>;
 
     constructor(private databaseService: DatabaseService) {
     }
 
     public async init() {
-        const result = await this.databaseService.query('SELECT channelId FROM SLACK.ChannelsNotification');
-        console.log(result);
-        this.channelIds = result;
+        const result = await this.databaseService
+            .query('SELECT channel.id as id, channel.channelId as channelId, channel.teamId as teamId, wk.token as token ' +
+                'FROM ChannelsNotification as channel ' +
+                'INNER JOIN Workspaces as wk ' +
+                'ON wk.teamId = channel.teamId;');
+        this.channels = [];
+        if (result && result.length > 0) {
+            this.channels = result.map(item => {
+                return {
+                    id: item.id,
+                    channelId: item.channelId,
+                    token: item.token,
+                    teamId: item.teamId
+                }
+            });
+        }
     }
 
-    public on(channelId: string): BotMessageEvent {
-        const channelIdIdx = this.channelIds.findIndex(x => x === channelId);
+    public async on(command: SlashCommand): Promise<BotMessageEvent> {
+        const channelIdIdx = this.channels.findIndex(x => x.channelId === command.channel_id);
         if (channelIdIdx === -1) {
-            this.channelIds.push(channelId);
-            this.databaseService.query(`INSERT INTO SLACK.ChannelsNotification (channelId) VALUES ${channelId}`);
+            const result = await this.databaseService.query(`SELECT token FROM Workspaces WHERE teamId = '${command.team_id}'`);
+            const channel = { channelId: command.channel_id, teamId: command.team_id, token: result[0].token } as ChannelsNotification;
+            this.channels.push(channel);
+            await this.databaseService.query(`INSERT INTO ChannelsNotification (channelId, teamId) VALUES ('${channel.channelId}', '${channel.teamId}')`);
             return {
                 text: 'notification is turned on this channel'
             } as BotMessageEvent;
         }
     }
 
-    public off(channelId: string): BotMessageEvent {
-        const channelIdIdx = this.channelIds.findIndex(x => x === channelId);
+    public async off(command: SlashCommand): Promise<BotMessageEvent> {
+        const channelIdIdx = this.channels.findIndex(x => x.channelId === command.channel_id);
         if (channelIdIdx !== -1) {
-            this.channelIds.splice(channelIdIdx, 1);
-            this.databaseService.query(`DELETE SLACK.ChannelsNotification WHERE channelId = ${channelId}`);
+            this.channels.splice(channelIdIdx, 1);
+            await this.databaseService.query(`DELETE ChannelsNotification WHERE channelId = '${command.channel_id}'`);
         }
         return {
             text: 'notification is turned off'
         } as BotMessageEvent;
     }
 
-    public getChannelIds() {
-        return this.channelIds;
+    public getChannels() {
+        return this.channels;
     }
 }
