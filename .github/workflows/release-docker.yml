@@ -1,13 +1,9 @@
-name: test
+name: release-docker
 
-# on:
-#   push:
-#     tags:
-#       - "v*.*.*"
 on:
   push:
-    branches:
-      - develop
+    tags:
+      - "v*.*.*"
 
 jobs:
   build:
