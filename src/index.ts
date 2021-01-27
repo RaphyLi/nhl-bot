@@ -24,17 +24,17 @@ const app = new App({
     clientId: process.env.SLACK_CLIENT_ID,
     clientSecret: process.env.SLACK_CLIENT_SECRET,
     stateSecret: process.env.SLACK_STATE_SECRET,
-    scopes: ['channels:history', 'chat:write', 'commands', 'groups:history', 'users:read', 'im:history', 'im:write', 'mpim:history', 'chat:write.public', 'incoming-webhook'],
+    scopes: ['channels:history', 'chat:write', 'commands', 'groups:history', 'users:read', 'im:history', 'im:write', 'mpim:history'],
     logLevel: LogLevel.DEBUG,
     installationStore: {
         storeInstallation: async (installation) => {
             // change the line below so it saves to your database
             if (installation.isEnterpriseInstall) {
                 // support for org wide app installation
-                return await databaseService.query(`INSERT INTO Workspaces (teamid, installation) VALUES ('${installation.enterprise.id}', '${JSON.stringify(installation)}')`);
+                return await databaseService.query(`INSERT INTO Workspaces (teamId, token, installation) VALUES ('${installation.enterprise.id}', '${installation.bot.token}', '${JSON.stringify(installation)}')`);
             } else {
                 // single team app installation
-                return await databaseService.query(`INSERT INTO Workspaces (teamid, installation) VALUES ('${installation.team.id}', '${JSON.stringify(installation)}')`);
+                return await databaseService.query(`INSERT INTO Workspaces (teamId, token, installation) VALUES ('${installation.team.id}', '${installation.bot.token}', '${JSON.stringify(installation)}')`);
             }
             throw new Error('Failed saving installation data to installationStore');
         },
@@ -42,12 +42,12 @@ const app = new App({
             // change the line below so it fetches from your database
             if (installQuery.isEnterpriseInstall && installQuery.enterpriseId !== undefined) {
                 // org wide app installation lookup
-                const query = await databaseService.query(`SELECT installation FROM Workspaces WHERE teamid = '${installQuery.enterpriseId}'`);
+                const query = await databaseService.query(`SELECT installation FROM Workspaces WHERE teamId = '${installQuery.enterpriseId}'`);
                 return JSON.parse(query[0].installation);
             }
             if (installQuery.teamId !== undefined) {
                 // single team app installation lookup
-                const query = await databaseService.query(`SELECT installation FROM Workspaces WHERE teamid = '${installQuery.teamId}'`);
+                const query = await databaseService.query(`SELECT installation FROM Workspaces WHERE teamId = '${installQuery.teamId}'`);
                 return JSON.parse(query[0].installation);
             }
             throw new Error('Failed fetching installation');
@@ -65,8 +65,6 @@ const actions = {
     'off': (event) => notificationService.off(event)
 }
 const everyDayAt9am = '0 9 * * *';
-const everyminute = '* * * * *';
-let first = true;
 
 app.command('/standings', async ({ command, ack, say }) => {
     await ack();
@@ -106,27 +104,25 @@ app.error(async (error) => {
     console.error(error);
 });
 
-cron.schedule(everyminute, () => {
-    if (first) {
-        first = false;
-        return;
-    }
+cron.schedule(everyDayAt9am, () => {
     Promise.all([
         scheduleService.get(),
         scheduleService.get(getYesterday())
     ]).then(([matchOfTheDay, scoreYesterday]) => {
-        const channelIds = notificationService.getChannelIds();
-        channelIds.forEach(async channelId => {
-            console.log(channelId);
+        const channels = notificationService.getChannels();
+        channels.forEach(async channel => {
+            console.log(channel);
             await app.client.chat.postMessage({
-                channel: channelId,
+                channel: channel.channelId,
                 attachments: matchOfTheDay.attachments,
-                text: ''
+                text: `NHL Games of the day's`,
+                token: channel.token
             });
             await app.client.chat.postMessage({
-                channel: channelId,
+                channel: channel.channelId,
                 attachments: scoreYesterday.attachments,
-                text: ''
+                text: `The results of yesterday's NHL games`,
+                token: channel.token
             });
         });
     });

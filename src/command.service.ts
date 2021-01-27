@@ -11,8 +11,8 @@ export class CommandService {
         'schedule': async (command: SlashCommand) => await this.scheduleService.get(),
         'scores': async (command: SlashCommand) => await this.scheduleService.get(getYesterday()),
         'live': async (command: SlashCommand) => await this.scheduleService.live(),
-        'on': async (command: SlashCommand) => await this.notificationService.on(command.channel_id),
-        'off': async (command: SlashCommand) => await this.notificationService.off(command.channel_id),
+        'on': async (command: SlashCommand) => await this.notificationService.on(command),
+        'off': async (command: SlashCommand) => await this.notificationService.off(command),
         'help': async (command: SlashCommand) => await this.helpService.help(),
     }
     constructor(
