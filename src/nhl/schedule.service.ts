@@ -13,11 +13,7 @@ export class ScheduleService {
     private BASE_URL = 'https://statsapi.web.nhl.com/api/v1';
 
     get(date?: string): Promise<BotMessageEvent> {
-        console.log(`get ${date ? date : ''}`);
-        let options;
-        if (date) {
-            options = { ...options, date: date, expand: 'schedule.linescore' };
-        }
+        let options = { date: date ? date : getToday(), expand: 'schedule.linescore' };
         return new Promise((resolve, reject) => {
             fetch<NHL>(this.BASE_URL + `/schedule${options ? "?" + qs.stringify(options) : ""}`).then((result) => {
                 const title = date ? `The results of yesterday's NHL games` : `NHL Games of the day's`;
