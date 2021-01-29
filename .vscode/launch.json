@@ -12,17 +12,6 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "env": {
-                "SLACK_SIGNING_SECRET": "ea2a23e8768e22b747ad558696ca88ae",
-                "SLACK_CLIENT_ID": "1620933655654.1633894684132",
-                "SLACK_CLIENT_SECRET": "dee4b4e2d58d527285d1feb3f18c3811",
-                "SLACK_STATE_SECRET": "my-secret-nhl",
-                "DB_HOST": "localhost",
-                "DB_PORT": "3306",
-                "DB_USER": "nhl",
-                "DB_PASSWORD": "nhl2021",
-                "DB_DATABASE": "nhl",
-            },
             "type": "pwa-node"
         },
         {
