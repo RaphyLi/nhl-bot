@@ -1,5 +1,5 @@
 import { App, LogLevel } from '@slack/bolt';
-import * as cron from 'node-cron';
+import * as schedule from 'node-schedule';
 import { CommandService } from './command.service';
 import { DatabaseService } from './database.service';
 import { HelpService } from './helpService';
@@ -7,7 +7,6 @@ import { ScheduleService } from './nhl/schedule.service';
 import { StandingService } from './nhl/standings.service';
 import { NotificationService } from './notification.service';
 import { getYesterday } from './utils/helpers';
-import mysql = require('mysql');
 
 const databaseService = new DatabaseService();
 const scheduleService = new ScheduleService();
@@ -64,7 +63,6 @@ const actions = {
     'on': (event) => notificationService.on(event),
     'off': (event) => notificationService.off(event)
 }
-const everyDayAt9am = '0 9 * * *';
 
 app.command('/standings', async ({ command, ack, say }) => {
     await ack();
@@ -104,7 +102,17 @@ app.error(async (error) => {
     console.error(error);
 });
 
-cron.schedule(everyDayAt9am, () => {
+const everyDayAt9am = '0 9 * * *';
+const tz = 'America/Toronto';
+
+const job = {
+    rule: everyDayAt9am,
+    tz: tz
+} as schedule.RecurrenceSpecDateRange;
+
+schedule.scheduleJob(job, (fireDate) => {
+    console.log(`Job at: ${fireDate.toString()}`);
+
     Promise.all([
         scheduleService.get(),
         scheduleService.get(getYesterday())
