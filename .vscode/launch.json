@@ -12,7 +12,19 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "type": "pwa-node"
+            "type": "pwa-node",
+            "env": {
+                "SLACK_SIGNING_SECRET": "c6934a50a80213a850743e838874dbfe",
+                "SLACK_CLIENT_ID": "1620933655654.1745468648692",
+                "SLACK_CLIENT_SECRET": "60b0e0a3e3b1998cba3b3463717bb33a",
+                "SLACK_STATE_SECRET": "my-secret",
+                "DB_HOST": "localhost",
+                "DB_PORT": "3306",
+                "DB_USER": "nhl",
+                "DB_PASSWORD": "nhl2021",
+                "DB_DATABASE": "nhl",
+                "DEBUG": "true"
+            }
         },
         {
             "name": "Attach by Process ID",

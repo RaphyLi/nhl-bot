@@ -13,6 +13,8 @@ services:
       - MYSQL_ROOT_PASSWORD=r00t
       - MYSQL_USER=nhl
       - MYSQL_PASSWORD=nhl2021
+    ports:
+      - 3306:3306
 
   # ----------------------------------------
   # ADMINER
@@ -29,27 +31,27 @@ services:
       - 9080:8080
 
   # ----------------------------------------
-  # ADMINER
+  # NHL
   # ----------------------------------------
-  nhl:
-    # image: ghcr.io/raphyli/nhl-bot:latest
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: devops/nhl-bot:latest
-    container_name: nhl
-    restart: always
-    depends_on:
-      - db
-    environment:
-      - SLACK_SIGNING_SECRET=ea2a23e8768e22b747ad558696ca88ae
-      - SLACK_CLIENT_ID=1620933655654.1633894684132
-      - SLACK_CLIENT_SECRET=dee4b4e2d58d527285d1feb3f18c3811
-      - SLACK_STATE_SECRET=
-      - DB_HOST=db
-      - DB_PORT=3306
-      - DB_USER=nhl
-      - DB_PASSWORD=nhl2021
-      - DB_DATABASE=nhl
-    ports:
-      - 3000:3000
+  # nhl:
+  #   # image: ghcr.io/raphyli/nhl-bot:latest
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   image: devops/nhl-bot:latest
+  #   container_name: nhl
+  #   restart: always
+  #   depends_on:
+  #     - db
+  #   environment:
+  #     - SLACK_SIGNING_SECRET=ea2a23e8768e22b747ad558696ca88ae
+  #     - SLACK_CLIENT_ID=1620933655654.1633894684132
+  #     - SLACK_CLIENT_SECRET=dee4b4e2d58d527285d1feb3f18c3811
+  #     - SLACK_STATE_SECRET=
+  #     - DB_HOST=db
+  #     - DB_PORT=3306
+  #     - DB_USER=nhl
+  #     - DB_PASSWORD=nhl2021
+  #     - DB_DATABASE=nhl
+  #   ports:
+  #     - 3000:3000
