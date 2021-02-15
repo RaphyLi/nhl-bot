@@ -7,7 +7,7 @@ export async function up(knex: Knex): Promise<void> {
             workspaces.increments('id').primary().notNullable();
             workspaces.string('teamId', 50).notNullable();
             workspaces.string('token', 1000).notNullable();
-            workspaces.string('installation', 255).notNullable();
+            workspaces.string('installation', 1000).notNullable();
         });
     }
     isExist = await knex.schema.hasTable('ChannelsNotification');
