@@ -1,4 +1,4 @@
-import { App, LogLevel } from '@slack/bolt';
+import { App, Installation, LogLevel } from '@slack/bolt';
 import * as schedule from 'node-schedule';
 import { CommandService } from './command.service';
 import { DatabaseService } from './database.service';
@@ -15,7 +15,8 @@ const helpService = new HelpService();
 const notificationService = new NotificationService(databaseService);
 const commandService = new CommandService(scheduleService, standingService, notificationService, helpService);
 
-databaseService.connection();
+
+databaseService.connect();
 notificationService.init();
 
 const app = new App({
@@ -26,14 +27,14 @@ const app = new App({
     scopes: ['channels:history', 'chat:write', 'commands', 'groups:history', 'users:read', 'im:history', 'im:write', 'mpim:history'],
     logLevel: LogLevel.DEBUG,
     installationStore: {
-        storeInstallation: async (installation) => {
+        storeInstallation: async (installation: Installation) => {
             // change the line below so it saves to your database
             if (installation.isEnterpriseInstall) {
                 // support for org wide app installation
-                return await databaseService.query(`INSERT INTO Workspaces (teamId, token, installation) VALUES ('${installation.enterprise.id}', '${installation.bot.token}', '${JSON.stringify(installation)}')`);
+                return await databaseService.knex('Workspaces').insert([{ teamId: installation.enterprise.id, token: installation.bot.token, installation: JSON.stringify(installation) }]);
             } else {
                 // single team app installation
-                return await databaseService.query(`INSERT INTO Workspaces (teamId, token, installation) VALUES ('${installation.team.id}', '${installation.bot.token}', '${JSON.stringify(installation)}')`);
+                return await databaseService.knex('Workspaces').insert([{ teamId: installation.team.id, token: installation.bot.token, installation: JSON.stringify(installation) }]);
             }
             throw new Error('Failed saving installation data to installationStore');
         },
@@ -41,13 +42,13 @@ const app = new App({
             // change the line below so it fetches from your database
             if (installQuery.isEnterpriseInstall && installQuery.enterpriseId !== undefined) {
                 // org wide app installation lookup
-                const query = await databaseService.query(`SELECT installation FROM Workspaces WHERE teamId = '${installQuery.enterpriseId}'`);
-                return JSON.parse(query[0].installation);
+                const workspace = await databaseService.knex('Workspaces').where({ teamId: installQuery.enterpriseId }).select('installation').first();
+                return JSON.parse(workspace.installation);
             }
             if (installQuery.teamId !== undefined) {
                 // single team app installation lookup
-                const query = await databaseService.query(`SELECT installation FROM Workspaces WHERE teamId = '${installQuery.teamId}'`);
-                return JSON.parse(query[0].installation);
+                const workspace = await databaseService.knex('Workspaces').where({ teamId: installQuery.teamId }).select('installation').first();
+                return JSON.parse(workspace.installation);
             }
             throw new Error('Failed fetching installation');
         },
@@ -124,13 +125,13 @@ schedule.scheduleJob(job, (fireDate) => {
                 channel: channel.channelId,
                 attachments: matchOfTheDay.attachments,
                 text: `NHL Games of the day's`,
-                token: channel.token
+                token: channel.workspaces.token
             });
             await app.client.chat.postMessage({
                 channel: channel.channelId,
                 attachments: scoreYesterday.attachments,
                 text: `The results of yesterday's NHL games`,
-                token: channel.token
+                token: channel.workspaces.token
             });
         });
     });

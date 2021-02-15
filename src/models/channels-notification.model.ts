@@ -1,6 +1,9 @@
+import { Workspaces } from './workspaces.model';
+
 export class ChannelsNotification {
     id: number;
     channelId: string;
-    token: string;
     teamId: string;
+
+    workspaces: Workspaces;
 }

@@ -9,6 +9,7 @@ ARG DB_PORT:$DB_PORT
 ARG DB_USER:$DB_USER
 ARG DB_PASSWORD:$DB_PASSWORD
 ARG DB_DATABASE:$DB_DATABASE
+ARG DEBUG:#DEBUG
 
 WORKDIR /usr/src/app
 
@@ -18,4 +19,4 @@ RUN npm install
 
 COPY . .
 
-CMD [ "npm", "start" ]
+CMD [ "npm", "start:prod" ]
