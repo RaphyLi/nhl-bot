@@ -1,5 +1,6 @@
+import { Franchise } from './franchise';
 import { Venue } from "./game";
-import { Conference, Division, Franchise } from "./standings";
+import { Conference, Division } from "./standings";
 
 export interface LeagueRecord {
     wins: number;
@@ -24,6 +25,8 @@ export interface Team {
     officialSiteUrl: string;
     franchiseId: number;
     active: boolean;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 export interface Away {
@@ -35,6 +38,7 @@ export interface Away {
     goaliePulled: boolean;
     numSkaters: number;
     powerPlay: boolean;
+    rinkSide: string;
 }
 
 export interface Home {
@@ -46,6 +50,7 @@ export interface Home {
     goaliePulled: boolean;
     numSkaters: number;
     powerPlay: boolean;
+    rinkSide: string;
 }
 
 export interface Teams {
