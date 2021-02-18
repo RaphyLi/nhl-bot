@@ -13,7 +13,7 @@ import { SyncService } from './sync.service';
 import { getYesterday } from './utils/helpers';
 
 const databaseService = new DatabaseService();
-const scheduleService = new ScheduleService();
+const scheduleService = new ScheduleService(databaseService);
 const standingService = new StandingService();
 const franchiseService = new FranchiseService();
 const teamService = new TeamService();
@@ -25,6 +25,9 @@ const commandService = new CommandService(scheduleService, standingService, noti
 
 databaseService.connect();
 notificationService.init();
+
+scheduleService.getScheduleByDay('2021-02-18');
+scheduleService.getNextGameByTeam('mtl');
 
 const app = new App({
     signingSecret: process.env.SLACK_SIGNING_SECRET,
@@ -153,6 +156,7 @@ schedule.scheduleJob(syncJob, async () => {
     await syncService.sync();
     console.log('[Sync]: Sync job done');
 });
+
 
 (async () => {
     // Start your app

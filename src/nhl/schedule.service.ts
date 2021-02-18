@@ -2,6 +2,7 @@ import { ImageElement, MrkdwnElement, PlainTextElement } from '@slack/bolt';
 import { BotMessageEvent } from '@slack/bolt/dist/types/events';
 import { ContextBlock } from '@slack/web-api';
 import qs from 'qs';
+import { DatabaseService } from '../database.service';
 import fetch from '../utils/fetch';
 import { getToday } from '../utils/helpers';
 import { mappingTeamIdToLogo } from './logo';
@@ -13,6 +14,86 @@ import { Away, Home } from './models/teams';
 export class ScheduleService {
     private BASE_URL = 'https://statsapi.web.nhl.com/api/v1';
 
+    constructor(private databaseService: DatabaseService) { }
+
+    getScheduleByDay(date: string) {
+        this.databaseService.knex('NHLGames')
+            .leftJoin('NHLLinescores', 'NHLLinescores.gamePk', '=', 'NHLGames.gamePk')
+            .innerJoin('NHLTeams', function () {
+                this.on('NHLTeams.id', '=', 'NHLGames.awayTeamId').orOn('NHLTeams.id', '=', 'NHLGames.homeTeamId');
+            })
+            .where('NHLGames.gameDate', '=', date ? date : getToday())
+            .select()
+            .options({ nestTables: true })
+            .then((rows) => {
+                const games = rows.reduce((acc, curr) => {
+                    let game: Game = acc[curr.NHLGames['gamePk']] || { ...curr.NHLGames, linescore: curr.NHLLinescores };
+                    if (curr.NHLGames.awayTeamId === curr.NHLTeams.id) {
+                        game.linescore.teams = {
+                            ...game.linescore.teams,
+                            away: curr.NHLTeams
+                        }
+                    } else {
+                        game.linescore.teams = {
+                            ...game.linescore.teams,
+                            home: curr.NHLTeams
+                        }
+                    }
+                    acc[curr.NHLGames['gamePk']] = game;
+                    return acc;
+                }, {});
+            });
+    }
+
+    getNextGameByTeam(team) {
+        this.databaseService.knex.transaction((trx) => {
+            this.databaseService.knex('NHLGames')
+                .innerJoin('NHLTeams', function () {
+                    this.on('NHLTeams.id', '=', 'NHLGames.awayTeamId').orOn('NHLTeams.id', '=', 'NHLGames.homeTeamId');
+                })
+                .where('NHLGames.gameDate', '>=', getToday())
+                .andWhere('NHLTeams.abbreviation', team)
+                .limit(5)
+                .select()
+                .options({ nestTables: true })
+                .transacting(trx)
+                .then((rows) => {
+                    const ids = rows.reduce((acc: Array<number>, curr) => {
+                        acc = (acc || []);
+                        if (!acc.find(x => x === curr.NHLGames.awayTeamId)) {
+                            acc.push(curr.NHLGames.awayTeamId);
+                        }
+                        if (!acc.find(x => x === curr.NHLGames.homeTeamId)) {
+                            acc.push(curr.NHLGames.homeTeamId);
+                        }
+                        return acc;
+                    }, []);
+                    return this.databaseService.knex('NHLTeams')
+                        .whereIn('id', ids)
+                        .select()
+                        .transacting(trx)
+                        .then(teams => {
+                            const games = rows.reduce((acc, curr) => {
+                                let game: Game = acc[curr.NHLGames['gamePk']] || { ...curr.NHLGames, linescore: curr.NHLLinescores || { teams: {} } };
+                                game.linescore.teams = {
+                                    ...game.linescore.teams,
+                                    away: teams.find(x => x.id === curr.NHLGames.awayTeamId),
+                                    home: teams.find(x => x.id === curr.NHLGames.homeTeamId)
+                                }
+                                acc[curr.NHLGames['gamePk']] = game;
+                                return acc;
+                            }, {});
+                            return Object.values(games);
+                        });
+                })
+                .then((done) => {
+                    console.log('done')
+                    trx.commit();
+                })
+                .catch(trx.rollback);
+        });
+    }
+
     get(date?: string): Promise<BotMessageEvent> {
         let options = { date: date ? date : getToday(), expand: 'schedule.linescore' };
         return new Promise((resolve, reject) => {
@@ -20,7 +101,7 @@ export class ScheduleService {
                 const title = date ? `The results of yesterday's NHL games` : `NHL Games of the day's`;
                 const dateTitle = `${date ? date : getToday()}`;
                 const blocks: Array<ContextBlock> = new Array<ContextBlock>();
-
+                console.log(result.dates);
                 result.dates.forEach(value => {
                     value.games.forEach(game => {
                         let block: ContextBlock = {

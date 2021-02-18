@@ -11,7 +11,7 @@ export const getYesterday = function () {
     return formatDate(yesterday);
 }
 
-const formatDate = function (date: Date) {
+export const formatDate = function (date: Date) {
     let dd: string | number = date.getDate();
     let mm: string | number = date.getMonth() + 1;
     const year = date.getFullYear();
