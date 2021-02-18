@@ -3,18 +3,25 @@ import * as schedule from 'node-schedule';
 import { CommandService } from './command.service';
 import { DatabaseService } from './database.service';
 import { HelpService } from './helpService';
+import { FranchiseService } from './nhl/franchise.service';
 import { ScheduleService } from './nhl/schedule.service';
+import { SeasonService } from './nhl/season.service';
 import { StandingService } from './nhl/standings.service';
+import { TeamService } from './nhl/team.service';
 import { NotificationService } from './notification.service';
+import { SyncService } from './sync.service';
 import { getYesterday } from './utils/helpers';
 
 const databaseService = new DatabaseService();
 const scheduleService = new ScheduleService();
 const standingService = new StandingService();
+const franchiseService = new FranchiseService();
+const teamService = new TeamService();
+const seasonService = new SeasonService();
+const syncService = new SyncService(databaseService, franchiseService, seasonService, teamService, scheduleService);
 const helpService = new HelpService();
 const notificationService = new NotificationService(databaseService);
 const commandService = new CommandService(scheduleService, standingService, notificationService, helpService);
-
 
 databaseService.connect();
 notificationService.init();
@@ -137,6 +144,15 @@ schedule.scheduleJob(job, (fireDate) => {
     });
 });
 
+const syncJob = {
+    rule: '0 5 * * *',
+    tz: tz
+};
+schedule.scheduleJob(syncJob, async () => {
+    console.log('[Sync]: Sync job launch');
+    await syncService.sync();
+    console.log('[Sync]: Sync job done');
+});
 
 (async () => {
     // Start your app

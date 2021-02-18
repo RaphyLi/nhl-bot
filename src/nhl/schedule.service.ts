@@ -5,6 +5,7 @@ import qs from 'qs';
 import fetch from '../utils/fetch';
 import { getToday } from '../utils/helpers';
 import { mappingTeamIdToLogo } from './logo';
+import { NHLDate } from './models/dates';
 import { Game } from './models/game';
 import { NHL } from './models/nhl';
 import { Away, Home } from './models/teams';
@@ -66,6 +67,15 @@ export class ScheduleService {
                         }
                     ]
                 } as BotMessageEvent);
+            });
+        });
+    }
+
+    getAll(seasonId: string): Promise<Array<NHLDate>> {
+        let options = { season: seasonId, expand: 'schedule.linescore' };
+        return new Promise((resolve, reject) => {
+            fetch<NHL>(this.BASE_URL + `/schedule${options ? "?" + qs.stringify(options) : ""}`).then((result) => {
+                resolve(result.dates);
             });
         });
     }

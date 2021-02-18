@@ -79,9 +79,3 @@ export interface Streak {
     streakNumber: number;
     streakType: string;
 }
-
-export interface Franchise {
-    franchiseId: number;
-    teamName: string;
-    link: string;
-}
