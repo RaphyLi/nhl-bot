@@ -5,7 +5,7 @@ export interface Game {
     link: string,
     gameType: string,
     season: string,
-    gameDate: Date,
+    gameDate: string,
     status: Status;
     teams: Teams;
     linescore: Linescore;

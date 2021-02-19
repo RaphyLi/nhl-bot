@@ -10,10 +10,10 @@ import { StandingService } from './nhl/standings.service';
 import { TeamService } from './nhl/team.service';
 import { NotificationService } from './notification.service';
 import { SyncService } from './sync.service';
-import { getYesterday } from './utils/helpers';
+import { getToday, getYesterday } from './utils/helpers';
 
 const databaseService = new DatabaseService();
-const scheduleService = new ScheduleService();
+const scheduleService = new ScheduleService(databaseService);
 const standingService = new StandingService();
 const franchiseService = new FranchiseService();
 const teamService = new TeamService();
@@ -25,6 +25,9 @@ const commandService = new CommandService(scheduleService, standingService, noti
 
 databaseService.connect();
 notificationService.init();
+
+// scheduleService.getScheduleByDay('2021-02-18');
+// scheduleService.getNextGameByTeam('mtl');
 
 const app = new App({
     signingSecret: process.env.SLACK_SIGNING_SECRET,
@@ -63,8 +66,8 @@ const app = new App({
 });
 
 const actions = {
-    'schedule': scheduleService.get,
-    'scores': () => scheduleService.get(getYesterday()),
+    'schedule': scheduleService.getScheduleByDay(getToday()),
+    'scores': () => scheduleService.getScheduleByDay(getYesterday()),
     'live': scheduleService.live,
     'standings': standingService.get,
     'help': helpService.help,
@@ -122,8 +125,8 @@ schedule.scheduleJob(job, (fireDate) => {
     console.log(`Job at: ${fireDate.toString()}`);
 
     Promise.all([
-        scheduleService.get(),
-        scheduleService.get(getYesterday())
+        scheduleService.getScheduleByDay(getToday()),
+        scheduleService.getScheduleByDay(getYesterday())
     ]).then(([matchOfTheDay, scoreYesterday]) => {
         const channels = notificationService.getChannels();
         channels.forEach(async channel => {
@@ -153,6 +156,7 @@ schedule.scheduleJob(syncJob, async () => {
     await syncService.sync();
     console.log('[Sync]: Sync job done');
 });
+
 
 (async () => {
     // Start your app

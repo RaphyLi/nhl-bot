@@ -10,7 +10,7 @@ export class NotificationService {
     }
 
     public async init() {
-        const result = await this.databaseService.knex('ChannelsNotification',)
+        const result = await this.databaseService.knex('ChannelsNotification')
             .innerJoin('Workspaces', 'Workspaces.teamId', '=', 'ChannelsNotification.teamId')
             .select()
             .options({ nestTables: true })

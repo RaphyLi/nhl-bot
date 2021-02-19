@@ -41,7 +41,7 @@ export class StandingService {
                         }
                     });
                     record.teamRecords
-                })
+                });
                 resolve({
                     blocks: [
                         {

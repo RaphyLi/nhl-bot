@@ -8,6 +8,7 @@ import { Team } from './nhl/models/teams';
 import { ScheduleService } from './nhl/schedule.service';
 import { SeasonService } from './nhl/season.service';
 import { TeamService } from './nhl/team.service';
+import { formatDate } from './utils/helpers';
 
 export class SyncService {
     constructor(
@@ -87,7 +88,8 @@ export class SyncService {
                 games.push({
                     gamePk: game.gamePk, link: game.link,
                     gameType: game.gameType, season: game.season,
-                    gameDate: game.gameDate,
+                    gameDateTime: game.gameDate,
+                    gameDate: formatDate(new Date(game.gameDate)),
                     awayTeamId: game.teams.away.team.id,
                     awayScore: game.teams.away.score,
                     homeTeamId: game.teams.home.team.id,
