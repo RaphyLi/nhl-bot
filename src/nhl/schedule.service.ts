@@ -165,7 +165,7 @@ export class ScheduleService {
         } as BotMessageEvent;
     }
 
-    getAll(seasonId: string): Promise<Array<NHLDate>> {
+    sync(seasonId: string): Promise<Array<NHLDate>> {
         let options = { season: seasonId, expand: 'schedule.linescore' };
         return new Promise((resolve, reject) => {
             fetch<NHL>(this.BASE_URL + `/schedule${options ? "?" + qs.stringify(options) : ""}`).then((result) => {

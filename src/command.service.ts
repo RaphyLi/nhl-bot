@@ -2,6 +2,7 @@ import { SlashCommand } from '@slack/bolt';
 import { HelpService } from './helpService';
 import { ScheduleService } from './nhl/schedule.service';
 import { StandingService } from './nhl/standings.service';
+import { TeamService } from './nhl/team.service';
 import { NotificationService } from './notification.service';
 import { getYesterday } from './utils/helpers';
 
@@ -11,6 +12,7 @@ export class CommandService {
         'schedule': async (command: SlashCommand) => await this.scheduleService.schedule(command),
         'scores': async (command: SlashCommand) => await this.scheduleService.getScheduleByDay(getYesterday()),
         'live': async (command: SlashCommand) => await this.scheduleService.live(),
+        'teams': async (command: SlashCommand) => await this.teamService.get(),
         'on': async (command: SlashCommand) => await this.notificationService.on(command),
         'off': async (command: SlashCommand) => await this.notificationService.off(command),
         'help': async (command: SlashCommand) => await this.helpService.help(),
@@ -19,6 +21,7 @@ export class CommandService {
         private scheduleService: ScheduleService,
         private standingService: StandingService,
         private notificationService: NotificationService,
+        private teamService: TeamService,
         private helpService: HelpService) {
     }
 

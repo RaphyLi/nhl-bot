@@ -16,18 +16,15 @@ const databaseService = new DatabaseService();
 const scheduleService = new ScheduleService(databaseService);
 const standingService = new StandingService();
 const franchiseService = new FranchiseService();
-const teamService = new TeamService();
+const teamService = new TeamService(databaseService);
 const seasonService = new SeasonService();
 const syncService = new SyncService(databaseService, franchiseService, seasonService, teamService, scheduleService);
 const helpService = new HelpService();
 const notificationService = new NotificationService(databaseService);
-const commandService = new CommandService(scheduleService, standingService, notificationService, helpService);
+const commandService = new CommandService(scheduleService, standingService, notificationService, teamService, helpService);
 
 databaseService.connect();
 notificationService.init();
-
-// scheduleService.getScheduleByDay('2021-02-18');
-// scheduleService.getNextGameByTeam('mtl');
 
 const app = new App({
     signingSecret: process.env.SLACK_SIGNING_SECRET,
@@ -65,16 +62,6 @@ const app = new App({
     },
 });
 
-const actions = {
-    'schedule': scheduleService.getScheduleByDay(getToday()),
-    'scores': () => scheduleService.getScheduleByDay(getYesterday()),
-    'live': scheduleService.live,
-    'standings': standingService.get,
-    'help': helpService.help,
-    'on': (event) => notificationService.on(event),
-    'off': (event) => notificationService.off(event)
-}
-
 app.command('/standings', async ({ command, ack, say }) => {
     await ack();
     await say(await commandService.handleCommand(command));
@@ -90,6 +77,11 @@ app.command('/scores', async ({ command, ack, say }) => {
     await say(await commandService.handleCommand(command));
 });
 
+app.command('/teams', async ({ command, ack, say }) => {
+    await ack();
+    await say(await commandService.handleCommand(command));
+})
+
 app.command('/on', async ({ command, ack, say }) => {
     await ack();
     await say(await commandService.handleCommand(command));
@@ -99,14 +91,6 @@ app.command('/off', async ({ command, ack, say }) => {
     await ack();
     await say(await commandService.handleCommand(command));
 });
-
-// // Listens to incoming messages that contain "hello"
-// app.message(/^(schedule|scores|live|standings|help|on|off).*/, async ({ event, context, say }) => {
-//     // RegExp matches are inside of context.matches
-//     const greeting = context.matches[0];
-
-//     say(await actions[greeting](event));
-// });
 
 app.error(async (error) => {
     // Check the details of the error to handle cases where you should retry sending a message or stop the app
