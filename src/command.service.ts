@@ -8,8 +8,8 @@ import { getYesterday } from './utils/helpers';
 export class CommandService {
     private commandAction = {
         'standings': async (command: SlashCommand) => await this.standingService.get(command),
-        'schedule': async (command: SlashCommand) => await this.scheduleService.get(),
-        'scores': async (command: SlashCommand) => await this.scheduleService.get(getYesterday()),
+        'schedule': async (command: SlashCommand) => await this.scheduleService.schedule(command),
+        'scores': async (command: SlashCommand) => await this.scheduleService.getScheduleByDay(getYesterday()),
         'live': async (command: SlashCommand) => await this.scheduleService.live(),
         'on': async (command: SlashCommand) => await this.notificationService.on(command),
         'off': async (command: SlashCommand) => await this.notificationService.off(command),
