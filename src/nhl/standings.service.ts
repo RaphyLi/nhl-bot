@@ -74,6 +74,7 @@ export class StandingService {
         }
         return;
     }
+
     private formatLine(teams: Array<TeamRecord>): string {
         const top = '                  GP  W  L  OT  PTS  DIFF   HOME    AWAY  S/O     L10  STRK\n';
         let message = top;

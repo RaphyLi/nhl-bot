@@ -23,9 +23,9 @@ export class SyncService {
 
     public sync() {
         return Promise.all([
-            this.franchise.getAll(),
-            this.teamService.getAll(),
-            this.seasonService.getAll()]
+            this.franchise.sync(),
+            this.teamService.sync(),
+            this.seasonService.sync()]
         ).then(([franchises, teams, seasons]) => {
             if (franchises.length) {
                 this.createOrUpdateFranchises(franchises);
@@ -36,7 +36,7 @@ export class SyncService {
             if (seasons.length) {
                 this.createOrUpdateSeasons(seasons);
             }
-            this.scheduleService.getAll(seasons[seasons.length - 1].seasonId).then((games) => {
+            this.scheduleService.sync(seasons[seasons.length - 1].seasonId).then((games) => {
                 this.createOrUpdateGames(games);
             });
         });
