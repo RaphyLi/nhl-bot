@@ -19,4 +19,4 @@ RUN npm install
 
 COPY . .
 
-CMD [ "npm", "start:prod" ]
+CMD [ "npm", "run", "start:prod" ]
