@@ -24,6 +24,7 @@ const notificationService = new NotificationService(databaseService);
 const commandService = new CommandService(scheduleService, standingService, notificationService, teamService, helpService);
 
 databaseService.connect();
+syncService.checkSync();
 notificationService.init();
 
 const app = new App({
