@@ -17,8 +17,15 @@ export class SyncService {
         private seasonService: SeasonService,
         private teamService: TeamService,
         private scheduleService: ScheduleService
-    ) {
+    ) { }
 
+    public checkSync() {
+        this.databaseService.knex('NHLTeams').count({ count: 'id' }).then(async (result) => {
+            const count = result[0].count;
+            if (count === 0) {
+                await this.sync();
+            }
+        });
     }
 
     public sync() {
