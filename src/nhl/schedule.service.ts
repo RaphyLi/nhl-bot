@@ -91,7 +91,7 @@ export class ScheduleService {
                 .where('NHLGames.gameDate', '>=', getToday())
                 .andWhere('NHLTeams.abbreviation', team)
                 .orderBy('NHLGames.gameDateTime')
-                .limit(5)
+                .limit(10)
                 .select()
                 .options({ nestTables: true })
                 .transacting(trx)
