@@ -4,6 +4,7 @@ import { ContextBlock } from '@slack/web-api';
 import moment from 'moment-timezone';
 import qs from 'qs';
 import { DatabaseService } from '../database.service';
+import { Injectable } from '../di/decorators/injectable';
 import fetch from '../utils/fetch';
 import { getToday } from '../utils/helpers';
 import { mappingTeamIdToLogo } from './logo';
@@ -11,6 +12,7 @@ import { NHLDate } from './models/dates';
 import { Game } from './models/game';
 import { NHL } from './models/nhl';
 
+@Injectable()
 export class ScheduleService {
     private BASE_URL = 'https://statsapi.web.nhl.com/api/v1';
 

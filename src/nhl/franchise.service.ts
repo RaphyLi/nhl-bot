@@ -1,6 +1,8 @@
+import { Injectable } from '../di/decorators/injectable';
 import fetch from '../utils/fetch';
 import { Franchise } from './models/franchise';
 
+@Injectable()
 export class FranchiseService {
     private BASE_URL = 'https://statsapi.web.nhl.com/api/v1';
 

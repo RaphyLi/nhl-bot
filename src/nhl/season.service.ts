@@ -1,6 +1,8 @@
+import { Injectable } from '../di/decorators/injectable';
 import fetch from '../utils/fetch';
 import { Season } from './models/season';
 
+@Injectable()
 export class SeasonService {
     private BASE_URL = 'https://statsapi.web.nhl.com/api/v1';
 

@@ -1,4 +1,5 @@
 import { SlashCommand } from '@slack/bolt';
+import { Injectable } from './di/decorators/injectable';
 import { HelpService } from './helpService';
 import { ScheduleService } from './nhl/schedule.service';
 import { StandingService } from './nhl/standings.service';
@@ -6,6 +7,7 @@ import { TeamService } from './nhl/team.service';
 import { NotificationService } from './notification.service';
 import { getYesterday } from './utils/helpers';
 
+@Injectable()
 export class CommandService {
     private commandAction = {
         'standings': async (command: SlashCommand) => await this.standingService.get(command),
