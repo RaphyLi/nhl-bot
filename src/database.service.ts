@@ -1,6 +1,8 @@
+import { Injectable } from './di/decorators/injectable';
 import Knex = require('knex');
 import mysql = require('mysql');
 
+@Injectable()
 export class DatabaseService {
     public knex: Knex;
 

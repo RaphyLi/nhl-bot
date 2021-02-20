@@ -1,5 +1,7 @@
 import { MessageAttachment } from "@slack/bolt";
+import { Injectable } from './di/decorators/injectable';
 
+@Injectable()
 export class HelpService {
     constructor() {
 

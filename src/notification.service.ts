@@ -1,8 +1,10 @@
 import { BotMessageEvent, SlashCommand } from '@slack/bolt';
 import { DatabaseService } from './database.service';
+import { Injectable } from './di/decorators/injectable';
 import { ChannelsNotification } from './models/channels-notification.model';
 import { Workspaces } from './models/workspaces.model';
 
+@Injectable()
 export class NotificationService {
     private channels: Array<ChannelsNotification> = new Array<ChannelsNotification>();
 

@@ -1,4 +1,5 @@
 import { DatabaseService } from './database.service';
+import { Injectable } from './di/decorators/injectable';
 import { FranchiseService } from './nhl/franchise.service';
 import { NHLDate } from './nhl/models/dates';
 import { Franchise } from './nhl/models/franchise';
@@ -10,6 +11,7 @@ import { SeasonService } from './nhl/season.service';
 import { TeamService } from './nhl/team.service';
 import { formatDate } from './utils/helpers';
 
+@Injectable()
 export class SyncService {
     constructor(
         private databaseService: DatabaseService,

@@ -1,9 +1,11 @@
 import { SlashCommand } from '@slack/bolt';
 import { KnownBlock } from '@slack/web-api';
 import qs from 'qs';
+import { Injectable } from '../di/decorators/injectable';
 import fetch from '../utils/fetch';
 import { Division, Standings, TeamRecord } from './models/standings';
 
+@Injectable()
 export class StandingService {
     private BASE_URL = 'https://statsapi.web.nhl.com/api/v1';
     private divisions: Array<Division>;

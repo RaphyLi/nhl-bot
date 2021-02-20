@@ -1,9 +1,12 @@
 import { BotMessageEvent, ContextBlock } from '@slack/bolt';
 import { DatabaseService } from '../database.service';
+import { Injectable } from '../di/decorators/injectable';
 import fetch from '../utils/fetch';
 import { mappingTeamIdToLogo } from './logo';
 import { Team } from './models/teams';
 
+
+@Injectable()
 export class TeamService {
     private BASE_URL = 'https://statsapi.web.nhl.com/api/v1';
 
