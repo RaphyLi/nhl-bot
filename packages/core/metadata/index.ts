@@ -1,1 +1,1 @@
-export * from './injectable';
+export * from './injectable.decorator';

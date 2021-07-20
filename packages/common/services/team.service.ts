@@ -1,23 +1,12 @@
 import { BotMessageEvent, ContextBlock } from '@slack/bolt';
-import { fetch } from '../util/fetch';
 import { Injectable } from '@nhl/core';
-import { DatabaseService } from '../services';
-import { Team } from '../models';
+import type { Team } from '../models';
 import { mappingTeamIdToLogo } from '../logo';
+import type { DatabaseService } from './database.service';
 
 @Injectable()
 export class TeamService {
-  private BASE_URL = 'https://statsapi.web.nhl.com/api/v1';
-
   constructor(private databaseService: DatabaseService) {}
-
-  sync(): Promise<Array<Team>> {
-    return new Promise((resolve, reject) => {
-      fetch<{ copyright: string; teams: Array<Team> }>(this.BASE_URL + `/teams`).then((result) => {
-        resolve(result.teams);
-      });
-    });
-  }
 
   get(): Promise<BotMessageEvent> {
     return this.databaseService

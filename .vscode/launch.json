@@ -1,39 +1,57 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "Launch Program",
-            "program": "${workspaceFolder}/src/index.ts",
-            "preLaunchTask": "tsc: build - tsconfig.json",
-            "request": "launch",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "type": "pwa-node",
-            "env": {
-                "SLACK_SIGNING_SECRET": "c6934a50a80213a850743e838874dbfe",
-                "SLACK_CLIENT_ID": "1620933655654.1745468648692",
-                "SLACK_CLIENT_SECRET": "60b0e0a3e3b1998cba3b3463717bb33a",
-                "SLACK_STATE_SECRET": "my-secret",
-                "DB_HOST": "localhost",
-                "DB_PORT": "3306",
-                "DB_USER": "nhl",
-                "DB_PASSWORD": "nhl2021",
-                "DB_DATABASE": "nhl",
-                "DEBUG": "true"
-            }
-        },
-        {
-            "name": "Attach by Process ID",
-            "processId": "${command:PickProcess}",
-            "request": "attach",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "type": "pwa-node"
-        },
-    ]
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch Program",
+      "program": "${workspaceFolder}/nhl-api/index.ts",
+      "preLaunchTask": "tsc: build - tsconfig.json",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "pwa-node"
+      // "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+      // "outputCapture": "console"
+    },
+    {
+      "name": "Launch Slack App",
+      "program": "${workspaceFolder}/nhl-slack/index.ts",
+      "preLaunchTask": "tsc: build - tsconfig.json",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "pwa-node",
+      "trace": true,
+      "env": {
+        "SLACK_SIGNING_SECRET": "c6934a50a80213a850743e838874dbfe",
+        "SLACK_CLIENT_ID": "1620933655654.1745468648692",
+        "SLACK_CLIENT_SECRET": "60b0e0a3e3b1998cba3b3463717bb33a",
+        "SLACK_STATE_SECRET": "my-secret",
+        "DB_HOST": "localhost",
+        "DB_PORT": "3306",
+        "DB_USER": "nhl",
+        "DB_PASSWORD": "nhl2021",
+        "DB_DATABASE": "nhl",
+        "DEBUG": "true"
+      },
+      "outputCapture": "std"
+    },
+    {
+      "name": "Launch API",
+      "program": "${workspaceFolder}/nhl-api/index.js",
+      "preLaunchTask": "tsc: build - tsconfig.json",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "pwa-node",
+      "trace": true,
+      "outputCapture": "std"
+    },
+    {
+      "name": "Attach by Process ID",
+      "processId": "${command:PickProcess}",
+      "request": "attach",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "pwa-node"
+    }
+  ]
 }

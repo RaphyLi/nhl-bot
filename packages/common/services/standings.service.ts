@@ -3,7 +3,7 @@ import { KnownBlock } from '@slack/web-api';
 import qs from 'qs';
 import { Injectable } from '@nhl/core';
 import { fetch } from '../util/fetch';
-import { Division, Standings, TeamRecord } from '../models';
+import type { Division, Standings, TeamRecord } from '../models';
 
 @Injectable()
 export class StandingService {

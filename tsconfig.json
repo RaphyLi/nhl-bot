@@ -1,14 +1,6 @@
 {
   "exclude": ["knexfile.ts", "node_modules"],
-  "include": [
-    "packages/core/database.service.ts",
-    "packages/core/nhl",
-    "packages/core/models",
-    "packages/core/models",
-    "packages/core/util/helpers.ts",
-    "packages/core/util/fetch.ts",
-    "nhl-slack"
-  ],
+  "include": ["./packages/**/*", "./nhl-slack/**/*", "./nhl-api/**/*"],
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig.json to read more about this file */
     /* Basic Options */
@@ -48,10 +40,12 @@
     // "noFallthroughCasesInSwitch": true,    /* Report errors for fallthrough cases in switch statement. */
     // "noUncheckedIndexedAccess": true,      /* Include 'undefined' in index signature results */
     /* Module Resolution Options */
-    // "moduleResolution": "node",            /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */
+    "moduleResolution": "node" /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */,
     "baseUrl": "." /* Base directory to resolve non-absolute module names. */,
     "paths": {
-      "@nhl/*": ["./packages/*"]
+      "@nhl/core": ["./packages/core"],
+      "@nhl/common": ["./packages/common"],
+      "@nhl/api": ["./packages/api"]
     } /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */,
     // "rootDirs": [],                        /* List of root folders whose combined content represents the structure of the project at runtime. */
     // "typeRoots": [],                       /* List of folders to include type definitions from. */

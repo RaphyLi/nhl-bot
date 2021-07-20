@@ -1,7 +1,7 @@
 import { BotMessageEvent, SlashCommand } from '@slack/bolt';
-import { DatabaseService } from '@nhl/common';
+import type { DatabaseService } from '@nhl/common';
 import { Injectable } from '@nhl/core';
-import { ChannelsNotification, Workspaces } from '../models';
+import type { ChannelsNotification, Workspaces } from '../models';
 
 @Injectable()
 export class NotificationService {

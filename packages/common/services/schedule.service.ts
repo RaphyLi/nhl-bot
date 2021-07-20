@@ -7,16 +7,14 @@ import {
 } from '@slack/bolt';
 import { BotMessageEvent } from '@slack/bolt/dist/types/events';
 import { ContextBlock } from '@slack/web-api';
+import { Injectable } from '@nhl/core';
+import type { NHL, Game } from '../models';
 import moment from 'moment-timezone';
 import qs from 'qs';
-import { DatabaseService } from './database.service';
+import type { DatabaseService } from './database.service';
 import { fetch } from '../util/fetch';
 import { getToday } from '../util/helpers';
 import { mappingTeamIdToLogo } from '../logo';
-import { NHLDate } from '../models/dates';
-import { Game } from '../models/game';
-import { Injectable } from '@nhl/core';
-import { NHL } from '../models';
 
 @Injectable()
 export class ScheduleService {
@@ -206,17 +204,6 @@ export class ScheduleService {
         }
       ]
     } as BotMessageEvent;
-  }
-
-  sync(seasonId: string): Promise<Array<NHLDate>> {
-    let options = { season: seasonId, expand: 'schedule.linescore' };
-    return new Promise((resolve, reject) => {
-      fetch<NHL>(this.BASE_URL + `/schedule${options ? '?' + qs.stringify(options) : ''}`).then(
-        (result) => {
-          resolve(result.dates);
-        }
-      );
-    });
   }
 
   private formatTeam(

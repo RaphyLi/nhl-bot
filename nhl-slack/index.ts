@@ -1,27 +1,34 @@
-import { DatabaseService, ScheduleService } from '@nhl/common';
-import { container, createPlatform } from '@nhl/core';
+require('module-alias/register');
+
+import { DatabaseService } from '@nhl/common';
 import { SlackApp } from './app';
-import { CommandService, SyncService, NotificationService } from './services';
+// import { CommandService, NotificationService } from './services';
+import { Jobs } from './services/jobs.service';
 
-createPlatform()
-  .bootstrap()
-  .then(() => {
-    (async () => {
-      const app = new SlackApp(
-        container.resolve(DatabaseService),
-        container.resolve(CommandService),
-        container.resolve(NotificationService),
-        container.resolve(SyncService),
-        container.resolve(ScheduleService)
-      );
-      await app.start();
+async function bootstrap() {
+  // await NHLApplication.create();
+  // registerCrons();
 
-      console.log('⚡️ Bolt app is running!');
-    })();
-  });
+  // var db = container.get(DatabaseService);
+  // db.connect();
+  // const app = new SlackApp(
+  //   container.get(DatabaseService),
+  //   // container.get(CommandService),
+  //   // container.get(NotificationService),
+  //   // container.get(SyncService),
+  //   // container.get(ScheduleService)
+  //   container.get(Jobs)
+  // );
+  // await app.start();
 
-const syncService = container.resolve(SyncService);
-const notificationService = container.resolve(NotificationService);
+  console.log('⚡️ Bolt app is running!');
+}
+bootstrap();
 
-syncService.checkSync();
-notificationService.init();
+// const syncService = container.resolve(SyncService);
+// const notificationService = container.resolve(NotificationService);
+
+// syncService.checkSync();
+// notificationService.init();
+
+console.log('test');
