@@ -11,10 +11,10 @@ import { Injectable } from '@nhl/core';
 import type { NHL, Game } from '../models';
 import moment from 'moment-timezone';
 import qs from 'qs';
-import type { DatabaseService } from './database.service';
 import { fetch } from '../util/fetch';
 import { getToday } from '../util/helpers';
 import { mappingTeamIdToLogo } from '../logo';
+import { DatabaseService } from './database.service';
 
 @Injectable()
 export class ScheduleService {

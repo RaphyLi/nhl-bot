@@ -2,7 +2,7 @@ import { BotMessageEvent, ContextBlock } from '@slack/bolt';
 import { Injectable } from '@nhl/core';
 import type { Team } from '../models';
 import { mappingTeamIdToLogo } from '../logo';
-import type { DatabaseService } from './database.service';
+import { DatabaseService } from './database.service';
 
 @Injectable()
 export class TeamService {

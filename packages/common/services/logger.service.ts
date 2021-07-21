@@ -1,4 +1,4 @@
-import { Injectable } from '../../core/metadata/injectable.decorator';
+import { Injectable } from '@nhl/core';
 import { clc, yellow } from '../util/cli-color';
 import { isPlainObject } from '../util/shared';
 
