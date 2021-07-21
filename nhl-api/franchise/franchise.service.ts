@@ -1,4 +1,4 @@
-// import type { Franchise } from '@nhl/common';
+// import { Franchise } from '@nhl/common';
 // import { Injectable } from '@nhl/core';
 // import { fetch } from '@nhl/common';
 

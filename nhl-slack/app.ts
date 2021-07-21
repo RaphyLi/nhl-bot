@@ -1,9 +1,5 @@
-import type { DatabaseService, ScheduleService } from '@nhl/common';
-import { getToday, getYesterday, Cron } from '@nhl/common';
-import { Injectable } from '@nhl/core';
+import { DatabaseService } from '@nhl/common';
 import { App, Installation, LogLevel } from '@slack/bolt';
-import * as schedule from 'node-schedule';
-import type { CommandService, NotificationService } from './services';
 import { Jobs } from './services/jobs.service';
 
 export class SlackApp {

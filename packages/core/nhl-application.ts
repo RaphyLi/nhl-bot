@@ -1,4 +1,3 @@
-import type { DatabaseService } from '@nhl/common';
 import { Logger } from '@nhl/common';
 
 export class NHLApplicationStatic {

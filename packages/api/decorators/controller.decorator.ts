@@ -1,5 +1,4 @@
-import { PATH_METADATA } from '../../core/injector/constants';
-import { isUndefined, isString } from '../../core/utils/shared.utils';
+import { isUndefined, PATH_METADATA } from "@nhl/core";
 
 export function Controller(prefix?: string): ClassDecorator {
   const defaultPath = '/';

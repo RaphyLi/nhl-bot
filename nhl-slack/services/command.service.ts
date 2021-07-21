@@ -1,9 +1,9 @@
 import { SlashCommand } from '@slack/bolt';
 import { Injectable } from '@nhl/core';
-import type { ScheduleService, StandingService, TeamService } from '@nhl/common';
+import { ScheduleService, StandingService, TeamService } from '@nhl/common';
 import { getYesterday } from '@nhl/common';
-import type { NotificationService } from './notification.service';
-import type { HelpService } from './help.service';
+import { NotificationService } from './notification.service';
+import { HelpService } from './help.service';
 
 @Injectable()
 export class CommandService {
