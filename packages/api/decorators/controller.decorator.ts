@@ -1,4 +1,4 @@
-import { isUndefined, PATH_METADATA } from "@nhl/core";
+import { isUndefined, PATH_METADATA } from '@nhl/core';
 
 export function Controller(prefix?: string): ClassDecorator {
   const defaultPath = '/';

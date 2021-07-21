@@ -1,4 +1,4 @@
-import { CronManager, DatabaseService, Logger, ScheduleService, TeamService } from '@nhl/common';
+import { CronManager, DatabaseService, Logger, ScheduleService } from '@nhl/common';
 import { NHLContainer } from '@nhl/core';
 import { RouterResolver } from './router/router.resolver';
 import { HttpAdapter } from './express/http-adapter';
