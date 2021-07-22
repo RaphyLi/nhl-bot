@@ -10,7 +10,6 @@ export class Injector {
   }
 
   private instantiateClass<T>(type: Type<T>, instances: Map<Type, T>) {
-    console.log(type.name);
     const params = this.resolveConstructorParams(type);
     const injections = params.map((param) => this.instantiateClass(param, instances));
 

@@ -38,7 +38,7 @@
     },
     {
       "name": "Launch API",
-      "program": "${workspaceFolder}/nhl-api/index.js",
+      "program": "${workspaceFolder}/nhl-api/index.ts",
       "preLaunchTask": "tsc: build - tsconfig.json",
       "request": "launch",
       "skipFiles": ["<node_internals>/**"],

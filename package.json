@@ -43,8 +43,8 @@
     "query-string": "^7.0.1"
   },
   "_moduleAliases": {
-    "@nhl/core": "packages/core",
-    "@nhl/common": "packages/common",
-    "@nhl/api": "packages/api"
+    "@nhl/core": "dist/packages/core",
+    "@nhl/common": "dist/packages/common",
+    "@nhl/api": "dist/packages/api"
   }
 }
