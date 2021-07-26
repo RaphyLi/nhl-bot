@@ -1,5 +1,5 @@
-import { METHOD_METADATA, PATH_METADATA } from "@nhl/core";
-import { RequestMethod } from "../enums";
+import { METHOD_METADATA, PATH_METADATA } from '@nhl/core';
+import { RequestMethod } from '../enums';
 
 export interface RequestMappingMetadata {
   path?: string | string[];
