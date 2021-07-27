@@ -1,20 +1,19 @@
 import { CronManager, DatabaseService, Logger, ScheduleService } from '@nhl/common';
 import { NHLContainer } from '@nhl/core';
 import { RouterResolver } from './router/router.resolver';
-import { HttpAdapter } from './express/http-adapter';
 import { FranchiseController } from './franchise/franchise.controller';
-
+import { HttpServer } from './http/http-server';
 export class NHLApplication {
   private readonly logger = new Logger('NHLApplicationAPI');
   private readonly nhlContainer = new NHLContainer();
   private readonly cronManager: CronManager;
   private readonly routesResolver: RouterResolver;
   private httpServer: any;
-  private httpAdapter: HttpAdapter;
+  private httpAdapter: HttpServer;
   private appOptions: any;
 
   constructor() {
-    this.httpAdapter = new HttpAdapter();
+    this.httpAdapter = new HttpServer();
     this.nhlContainer.registerInjectables([DatabaseService, ScheduleService]);
     this.nhlContainer.registerControllers([FranchiseController]);
     this.cronManager = new CronManager(this.nhlContainer);

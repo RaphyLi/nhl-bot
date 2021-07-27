@@ -8,12 +8,11 @@ import {
   Type,
   isFunction,
   isConstructor,
-  isNil,
   METHOD_METADATA,
   isString
 } from '@nhl/core';
-import { HttpAdapter } from '../express/http-adapter';
-import { iterate } from 'iterare';
+import { RouterMethodFactory } from './router-method-factory';
+import { HttpServer } from '../http/http-server';
 
 export type RouterProxyCallback = <TRequest, TResponse>(
   req?: TRequest,
@@ -29,21 +28,22 @@ export interface RouteDefinition {
 }
 
 export class RouterResolver {
+  private routerMethodFactory = new RouterMethodFactory();
   constructor(private nhlContainer: NHLContainer) {}
 
-  public resolve(httpAdapter: HttpAdapter) {
+  public resolve(httpServer: HttpServer) {
     const controllers = this.nhlContainer.controllers;
     controllers.forEach((controller: any) => {
-      this.registerRouters(controller, httpAdapter);
+      this.registerRouters(controller, httpServer);
     });
   }
 
-  private registerRouters<T>(controller: Type<Controller>, httpAdapter: HttpAdapter) {
+  private registerRouters<T>(controller: Type<Controller>, httpServer: HttpServer) {
     const routes = this.extractRouterPaths(controller as any);
     const instance = new controller();
     const routerPaths = this.scanForPaths(instance);
     // Création des controllers
-    this.applyPathsToRouter(httpAdapter, routerPaths, instance);
+    this.applyPathsToRouter(httpServer, routerPaths, instance);
   }
 
   private extractRouterPaths(metatype: Type<Controller>, prefix = ''): string[] {
@@ -93,10 +93,12 @@ export class RouterResolver {
   }
 
   private applyPathsToRouter(
-    httpAdapter: HttpAdapter,
+    httpServer: HttpServer,
     routeDefinitions: Array<RouteDefinition>,
     instance: Controller
   ) {
     routeDefinitions.forEach((routeDefinition) => {});
   }
+
+  private createRequestHandler() {}
 }
