@@ -1,0 +1,39 @@
+{
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "apps/nhl-api/src",
+  "monorepo": true,
+  "root": "apps/nhl-api",
+  "compilerOptions": {
+    "webpack": true,
+    "tsConfigPath": "apps/nhl-api/tsconfig.app.json"
+  },
+  "projects": {
+    "nhl-api": {
+      "type": "application",
+      "root": "apps/nhl-api",
+      "entryFile": "main",
+      "sourceRoot": "apps/nhl-api/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/nhl-api/tsconfig.app.json"
+      }
+    },
+    "nhl-slack": {
+      "type": "application",
+      "root": "apps/nhl-slack",
+      "entryFile": "main",
+      "sourceRoot": "apps/nhl-slack/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/nhl-slack/tsconfig.app.json"
+      }
+    },
+    "core": {
+      "type": "library",
+      "root": "libs/core",
+      "entryFile": "index",
+      "sourceRoot": "libs/core/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/core/tsconfig.lib.json"
+      }
+    }
+  }
+}
