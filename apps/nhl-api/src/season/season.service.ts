@@ -5,13 +5,17 @@
 import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { map, Observable } from 'rxjs';
+import { InjectKnex, Knex } from 'nestjs-knex';
 import { Season } from '@nhl/core';
 
 @Injectable()
 export class SeasonService {
   private BASE_URL = 'https://statsapi.web.nhl.com/api/v1';
 
-  constructor(private httpService: HttpService) {}
+  constructor(
+    @InjectKnex() private readonly knex: Knex,
+    private httpService: HttpService,
+  ) {}
 
   getAll(): Observable<Array<Season>> {
     return this.httpService
